@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In - CropCare</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f9f7; }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #1a6b4a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #a4d65e;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a6b4a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            color: #a4d65e;
+            background-color: rgba(164, 214, 94, 0.1);
+        }
+
+        .nav-links .active {
+            color: #a4d65e;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: white;
+            color: #1a6b4a;
+        }
+
+        .cta-btn {
+            background-color: #a4d65e;
+            color: #1a6b4a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background-color: #92bb52;
+            transform: translateY(-2px);
+        }
+
+        /* Language Dropdown */
+        .language-selector {
+            position: relative;
+        }
+
+        .language-btn {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn:hover {
+            background-color: rgba(164, 214, 94, 0.2);
+            border-color: #a4d65e;
+            color: #a4d65e;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #1a6b4a;
+            border: 2px solid #a4d65e;
+            border-radius: 4px;
+            list-style: none;
+            min-width: 150px;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-dropdown li {
+            margin: 0;
+        }
+
+        .language-dropdown a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+        }
+
+        .language-dropdown a:hover {
+            background-color: #a4d65e;
+            color: #1a6b4a;
+        }
+
+        .language-dropdown a.active {
+            background-color: #a4d65e;
+            color: #1a6b4a;
+        }
+
+        /* Page layout: center two cards horizontally */
+        :root { --card-w: 840px; --card-h: 600px; --card-gap: 4rem; }
+        html, body { height: 100%; }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3.5rem 2.5rem; }
+
+        .cards { display: flex; gap: var(--card-gap); align-items: stretch; max-width: calc(var(--card-w) * 2 + var(--card-gap)); width: 100%; }
+
+        .image-card {
+            background: #fafcf9;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(15, 40, 20, 0.09);
+            width: var(--card-w);
+            height: var(--card-h);
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+        }
+
+        /* Right login card */
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(15, 40, 20, 0.11);
+            width: var(--card-w);
+            height: var(--card-h);
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-card h2 { color:#0f6b46; margin-bottom:1.25rem; font-size:1.75rem; }
+        .form-group { margin-bottom:1rem; }
+        label { display:block; margin-bottom:0.5rem; color:#333; font-weight:700; font-size:0.95rem; }
+        input[type="text"], input[type="email"], input[type="password"] { width:100%; padding:0.8rem 0.95rem; border:1px solid #e6e6e6; border-radius:8px; font-size:0.98rem; font-family: inherit; background:#fbfdfb; }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus { outline:none; border-color:#0f6b46; box-shadow:0 6px 18px rgba(15,107,70,0.06); background:#fff; }
+        .submit-row { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:1.75rem; }
+        .btn-submit { background:#0f6b46; color:white; border:none; padding:0.6rem 1.25rem; border-radius:8px; cursor:pointer; font-weight:700; font-size:0.95rem; transition:background 0.2s ease; }
+        .btn-submit:hover { background:#0c553a; }
+        .create-link { color:#0f6b46; text-decoration:none; font-weight:600; font-size:0.92rem; }
+
+        @media (max-width:1100px) {
+            main { padding: 2rem; }
+            .cards { flex-direction: column; align-items: center; gap: 1.25rem; }
+            .image-card, .login-card { width: 100%; max-width: 920px; }
+            .image-card { height: 320px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" class="logo">
+            <div class="logo-icon">AC</div>
+            <span>AgroCare</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="yojana.html">Yojana</a></li>
+            <li><a href="contactus.html">Contact Us</a></li>
+        </ul>
+        <div class="language-selector">
+            <button class="language-btn" id="languageBtn">
+                <span>🌐</span>
+                <span id="langDisplay">EN</span>
+            </button>
+            <ul class="language-dropdown" id="languageDropdown">
+                <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+                <li><a href="#" class="lang-option" data-lang="mr">मराठी (Marathi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="hi">हिंदी (Hindi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="ta">தமிழ் (Tamil)</a></li>
+            </ul>
+        </div>
+        <div class="auth-buttons">
+            <button class="login-btn">Log In</button>
+           <a href="detect_details.html"><button class="cta-btn">Try AI Detector</button></a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="cards">
+            <div class="image-card">
+                <img src="log.avif" alt="Farm image">
+            </div>
+
+            <div class="login-card">
+                <h2>Welcome back</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="submit-row">
+                        <button type="submit" class="btn-submit">Sign In</button>
+                        <a href="forgot-password.html" class="create-link">Forgot Password?</a>
+                    </div>
+
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <p style="color: #666; font-size: 0.9rem;">
+                            Don't have an account? 
+                            <a href="form.html" style="color: #0f6b46; font-weight: 600; text-decoration: none;">Create new account</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="api-client.js"></script>
+    <script>
+        const loginPageTranslations = {
+            en: {
+                navHome: 'Home',
+                navAbout: 'About Us',
+                navYojana: 'Yojana',
+                navContact: 'Contact Us',
+                navLogin: 'Log In',
+                navDetector: 'Try AI Detector',
+                title: 'Welcome back',
+                email: 'Email',
+                emailPlaceholder: 'Enter your email',
+                password: 'Password',
+                passwordPlaceholder: 'Enter your password',
+                signIn: 'Sign In',
+                forgotPassword: 'Forgot Password?',
+                noAccount: "Don't have an account?",
+                createAccount: 'Create new account',
+                signingIn: 'Signing in...'
+            },
+            mr: {
+                navHome: 'होम',
+                navAbout: 'आमच्याबद्दल',
+                navYojana: 'योजना',
+                navContact: 'संपर्क करा',
+                navLogin: 'लॉग इन',
+                navDetector: 'AI डिटेक्टर वापरून पहा',
+                title: 'पुन्हा स्वागत आहे',
+                email: 'ईमेल',
+                emailPlaceholder: 'तुमचा ईमेल टाका',
+                password: 'पासवर्ड',
+                passwordPlaceholder: 'तुमचा पासवर्ड टाका',
+                signIn: 'साइन इन',
+                forgotPassword: 'पासवर्ड विसरलात?',
+                noAccount: 'खाते नाही का?',
+                createAccount: 'नवीन खाते तयार करा',
+                signingIn: 'साइन इन सुरू आहे...'
+            },
+            hi: {
+                navHome: 'होम',
+                navAbout: 'हमारे बारे में',
+                navYojana: 'योजना',
+                navContact: 'संपर्क करें',
+                navLogin: 'लॉग इन',
+                navDetector: 'AI डिटेक्टर आजमाएं',
+                title: 'वापसी पर स्वागत है',
+                email: 'ईमेल',
+                emailPlaceholder: 'अपना ईमेल दर्ज करें',
+                password: 'पासवर्ड',
+                passwordPlaceholder: 'अपना पासवर्ड दर्ज करें',
+                signIn: 'साइन इन',
+                forgotPassword: 'पासवर्ड भूल गए?',
+                noAccount: 'क्या आपका खाता नहीं है?',
+                createAccount: 'नया खाता बनाएं',
+                signingIn: 'साइन इन हो रहा है...'
+            },
+            ta: {
+                navHome: 'முகப்பு',
+                navAbout: 'எங்களைப் பற்றி',
+                navYojana: 'திட்டம்',
+                navContact: 'தொடர்பு கொள்ளவும்',
+                navLogin: 'உள்நுழையவும்',
+                navDetector: 'AI கண்டறிதலை முயற்சிக்கவும்',
+                title: 'மீண்டும் வரவேற்கிறோம்',
+                email: 'மின்னஞ்சல்',
+                emailPlaceholder: 'உங்கள் மின்னஞ்சலை உள்ளிடவும்',
+                password: 'கடவுச்சொல்',
+                passwordPlaceholder: 'உங்கள் கடவுச்சொல்லை உள்ளிடவும்',
+                signIn: 'உள்நுழை',
+                forgotPassword: 'கடவுச்சொல்லை மறந்துவிட்டீர்களா?',
+                noAccount: 'உங்களிடம் கணக்கு இல்லையா?',
+                createAccount: 'புதிய கணக்கு உருவாக்கவும்',
+                signingIn: 'உள்நுழைகிறது...'
+            }
+        };
+
+        function applyLoginPageLanguage(lang) {
+            const t = loginPageTranslations[lang] || loginPageTranslations.en;
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            if (navLinks[0]) navLinks[0].textContent = t.navHome;
+            if (navLinks[1]) navLinks[1].textContent = t.navAbout;
+            if (navLinks[2]) navLinks[2].textContent = t.navYojana;
+            if (navLinks[3]) navLinks[3].textContent = t.navContact;
+
+            const navLoginBtn = document.querySelector('.auth-buttons .login-btn');
+            const navDetectorBtn = document.querySelector('.auth-buttons .cta-btn');
+            if (navLoginBtn) navLoginBtn.textContent = t.navLogin;
+            if (navDetectorBtn) navDetectorBtn.textContent = t.navDetector;
+
+            const heading = document.querySelector('.login-card h2');
+            if (heading) heading.textContent = t.title;
+
+            const emailLabel = document.querySelector('label[for="email"]');
+            const emailInput = document.getElementById('email');
+            const passwordLabel = document.querySelector('label[for="password"]');
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.querySelector('.btn-submit');
+            const forgotPasswordLink = document.querySelector('.submit-row .create-link');
+            const signupPrompt = document.querySelector('main p');
+            const signupLink = document.querySelector('main p a');
+
+            if (emailLabel) emailLabel.textContent = t.email;
+            if (emailInput) emailInput.placeholder = t.emailPlaceholder;
+            if (passwordLabel) passwordLabel.textContent = t.password;
+            if (passwordInput) passwordInput.placeholder = t.passwordPlaceholder;
+            if (submitBtn && !submitBtn.disabled) submitBtn.textContent = t.signIn;
+            if (forgotPasswordLink) forgotPasswordLink.textContent = t.forgotPassword;
+            if (signupPrompt) signupPrompt.childNodes[0].textContent = t.noAccount + ' ';
+            if (signupLink) signupLink.textContent = t.createAccount;
+        }
+
+        window.translateDynamicContent = function (language) {
+            applyLoginPageLanguage(language);
+        };
+
+        // ============================================
+        // LOGIN FORM HANDLER
+        // ============================================
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form values
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Validate
+            if (!validateEmail(email)) {
+                showMessage('❌ Please enter a valid email', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('❌ Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            try {
+                // Show loading state
+                const btn = e.target.querySelector('button[type="submit"]');
+                const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+                const loadingText = (loginPageTranslations[selectedLanguage] || loginPageTranslations.en).signingIn;
+                btn.textContent = loadingText;
+                btn.disabled = true;
+
+                // Call login API
+                const response = await login(email, password);
+
+                showMessage('✅ ' + response.message, 'success');
+
+                // Redirect to dashboard or home page after 1.5 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+
+            } catch (error) {
+                showMessage('❌ ' + error.message, 'error');
+                
+                // Reset button
+                const btn = e.target.querySelector('button[type="submit"]');
+                const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+                btn.textContent = (loginPageTranslations[selectedLanguage] || loginPageTranslations.en).signIn;
+                btn.disabled = false;
+            }
+        });
+
+        // ============================================
+        // LANGUAGE DROPDOWN
+        // ============================================
+        document.getElementById('languageBtn').addEventListener('click', function(e){
+            e.preventDefault();
+            document.getElementById('languageDropdown').classList.toggle('active');
+        });
+        document.addEventListener('click', function(e){ 
+            if(!e.target.closest('.language-selector')){ 
+                document.getElementById('languageDropdown').classList.remove('active'); 
+            } 
+        });
+
+        // Check if user is already logged in
+        if (isLoggedIn()) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            applyLoginPageLanguage(localStorage.getItem('selectedLanguage') || 'en');
+        });
+    </script>
+<script src="google-translate-init.js"></script>
+</body>
+</html>

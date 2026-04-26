@@ -1,0 +1,29 @@
+
+╔═══════════════════════════════════════════════════════╗
+║  🌾 CROP DISEASE DETECTION SYSTEM - BACKEND 🌾      ║
+╚═══════════════════════════════════════════════════════╝
+
+✅ Server Status: RUNNING
+🚀 Server URL: http://localhost:5000
+📍 API Base URL: http://localhost:5000/api/auth
+🔍 Health Check: http://localhost:5000/health
+
+📚 AVAILABLE ENDPOINTS:
+  Authentication:
+    POST   /api/auth/signup
+    POST   /api/auth/login
+    POST   /api/auth/forgot-password
+    POST   /api/auth/verify-otp
+    POST   /api/auth/reset-password
+    GET    /api/auth/profile (Protected)
+    PUT    /api/auth/profile (Protected)
+  Image Analysis:
+    POST   /analyze
+    POST   /analyze-model
+
+💾 Database: MongoDB (crop_app)
+🔒 Authentication: JWT
+
+📧 OTP email sender configured: somvanshiamruta547@gmail.com
+✅ MongoDB Connected Successfully
+📍 Database: crop_app

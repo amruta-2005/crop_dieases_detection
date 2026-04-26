@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - AgroCare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #1a6b4a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #a4d65e;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a6b4a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            color: #a4d65e;
+            background-color: rgba(164, 214, 94, 0.1);
+        }
+
+        .nav-links .active {
+            color: #a4d65e;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: white;
+            color: #1a6b4a;
+        }
+
+        .cta-btn {
+            background-color: #a4d65e;
+            color: #1a6b4a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background-color: #92bb52;
+            transform: translateY(-2px);
+        }
+
+        /* Language Dropdown */
+        .language-selector {
+            position: relative;
+        }
+
+        .language-btn {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn:hover {
+            background-color: rgba(164, 214, 94, 0.2);
+            border-color: #a4d65e;
+            color: #a4d65e;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #1a6b4a;
+            border: 2px solid #a4d65e;
+            border-radius: 4px;
+            list-style: none;
+            min-width: 180px;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-dropdown li {
+            margin: 0;
+        }
+
+        .language-dropdown a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+        }
+
+        .language-dropdown a:hover {
+            background-color: #a4d65e;
+            color: #1a6b4a;
+        }
+
+        .language-dropdown a.active {
+            background-color: #a4d65e;
+            color: #1a6b4a;
+        }
+
+        /* About Content */
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .about-section {
+            margin-bottom: 4rem;
+        }
+
+        .about-section h2 {
+            font-size: 2.5rem;
+            color: #1a6b4a;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .about-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: #a4d65e;
+            border-radius: 2px;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f0f9f5 0%, #e8f5f0 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(26, 107, 74, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #a4d65e;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(26, 107, 74, 0.2);
+        }
+
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #1a6b4a;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* Mission & Vision */
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .mission-card, .vision-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .mission-card h3, .vision-card h3 {
+            color: #1a6b4a;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .mission-card h3::before {
+            content: '🎯';
+            font-size: 2rem;
+        }
+
+        .vision-card h3::before {
+            content: '🚀';
+            font-size: 2rem;
+        }
+
+        .mission-card p, .vision-card p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(26, 107, 74, 0.2);
+        }
+
+        .team-member .avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #a4d65e, #1a6b4a);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .team-member h4 {
+            color: #1a6b4a;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .role-label {
+            color: #a4d65e;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .team-member .description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1a6b4a 0%, #2a8f63 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-top: 3rem;
+        }
+
+        .cta-section h2 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section h2::after {
+            display: none;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0f3f2a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-section h2 { font-size: 2rem; }
+            .mission-vision { grid-template-columns: 1fr; }
+            .nav-links { gap: 1rem; }
+            .auth-buttons { flex-direction: column; gap: 0.5rem; }
+        }
+
+        @media (max-width: 600px) {
+            nav { padding: 1rem; flex-wrap: wrap; }
+            .nav-links { gap: 0.5rem; font-size: 0.9rem; }
+            .about-container { padding: 2rem 1rem; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">AC</div>
+            <span>AgroCare</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html" data-i18n="home">Home</a></li>
+            <li><a href="about.html" class="active" data-i18n="about">About Us</a></li>
+            <li><a href="yojana.html" data-i18n="detect">Yojana</a></li>
+            <li><a href="contactus.html" data-i18n="contact">Contact Us</a></li>
+        </ul>
+        <div class="language-selector">
+            <button class="language-btn" id="languageBtn">
+                <span>🌐</span>
+                <span id="langDisplay">EN</span>
+            </button>
+            <ul class="language-dropdown" id="languageDropdown">
+                <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+                <li><a href="#" class="lang-option" data-lang="mr">मराठी (Marathi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="hi">हिंदी (Hindi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="ta">தமிழ் (Tamil)</a></li>
+            </ul>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html"><button class="login-btn" data-i18n="login">Log In</button></a>
+            <a href="detect_details.html"><button class="cta-btn" data-i18n="tryDetector">Try AI Detector</button></a>
+        </div>
+    </nav>
+
+    <!-- About Content -->
+    <div class="about-container">
+
+        <!-- Features Section -->
+        <section class="about-section">
+            <h2 data-i18n="whyUsTitle">Why Choose AgroCare?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">🤖</div>
+                    <h3 data-i18n="feature1Title">AI Powered</h3>
+                    <p data-i18n="feature1Desc">Advanced machine learning algorithms detect diseases with 92% accuracy in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3 data-i18n="feature2Title">Fast & Accurate</h3>
+                    <p data-i18n="feature2Desc">Get instant diagnosis and treatment recommendations within seconds.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌾</div>
+                    <h3 data-i18n="feature3Title">Farmer Friendly</h3>
+                    <p data-i18n="feature3Desc">Simple, intuitive interface designed specifically for farmers in the field.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💰</div>
+                    <h3 data-i18n="feature4Title">Cost Effective</h3>
+                    <p data-i18n="feature4Desc">Reduce crop loss and increase productivity with affordable technology.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📱</div>
+                    <h3 data-i18n="feature5Title">Mobile Ready</h3>
+                    <p data-i18n="feature5Desc">Access disease detection directly from your smartphone anywhere, anytime.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🌍</div>
+                    <h3 data-i18n="feature6Title">Multi-Language</h3>
+                    <p data-i18n="feature6Desc">Available in multiple languages to support farmers across regions.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="about-section">
+            <h2 data-i18n="ourGoalsTitle">Our Mission & Vision</h2>
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h3 data-i18n="missionTitle">Our Mission</h3>
+                    <p data-i18n="missionDesc">To empower farmers with accessible, affordable, and accurate AI-powered crop disease detection technology that helps them make timely decisions, reduce crop loss, and increase agricultural productivity.</p>
+                </div>
+                <div class="vision-card">
+                    <h3 data-i18n="visionTitle">Our Vision</h3>
+                    <p data-i18n="visionDesc">To create a world where every farmer, regardless of their economic status, has access to cutting-edge technology that helps them grow healthier crops and achieve sustainable livelihoods.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="about-section">
+            <h2 data-i18n="teamTitle">Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="avatar">👨‍💼</div>
+                    <h4 data-i18n="member1Name">Amruta Somwanshi</h4>
+                    <p class="role-label" data-i18n="member1Role">Student</p>
+                    <p class="description" data-i18n="member1Desc">Computer Engineering</p>
+                </div>
+                <div class="team-member">
+                    <div class="avatar">👩‍💻</div>
+                    <h4 data-i18n="member2Name">Prathemesh Wandhare</h4>
+                    <p class="role-label" data-i18n="member2Role">Student</p>
+                    <p class="description" data-i18n="member2Desc">Computer Engineering</p>
+                </div>
+                <div class="team-member">
+                    <div class="avatar">👨‍🔬</div>
+                    <h4 data-i18n="member3Name">Vaishnavi Ware</h4>
+                    <p class="role-label" data-i18n="member3Role">Student</p>
+                    <p class="description" data-i18n="member3Desc">Computer Engineering</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 data-i18n="ctaTitle">Ready to Transform Your Farming?</h2>
+            <p data-i18n="ctaDesc">Join thousands of farmers already using CropCare to grow healthier crops and increase their yields.</p>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p data-i18n="footerText">&copy; 2026 CropCare. All rights reserved. Empowering farmers with AI technology.</p>
+    </footer>
+
+    <script>
+        // ─── Translation Data ───────────────────────────────────────────────
+        const translations = {
+            en: {
+                langCode: 'EN',
+                home: 'Home',
+                about: 'About Us',
+                detect: 'Yojana',
+                contact: 'Contact Us',
+                login: 'Log In',
+                tryDetector: 'Try AI Detector',
+                whyUsTitle: 'Why Choose AgroCare?',
+                feature1Title: 'AI Powered',
+                feature1Desc: 'Advanced machine learning algorithms detect diseases with 92% accuracy in real-time.',
+                feature2Title: 'Fast & Accurate',
+                feature2Desc: 'Get instant diagnosis and treatment recommendations within seconds.',
+                feature3Title: 'Farmer Friendly',
+                feature3Desc: 'Simple, intuitive interface designed specifically for farmers in the field.',
+                feature4Title: 'Cost Effective',
+                feature4Desc: 'Reduce crop loss and increase productivity with affordable technology.',
+                feature5Title: 'Mobile Ready',
+                feature5Desc: 'Access disease detection directly from your smartphone anywhere, anytime.',
+                feature6Title: 'Multi-Language',
+                feature6Desc: 'Available in multiple languages to support farmers across regions.',
+                ourGoalsTitle: 'Our Mission & Vision',
+                missionTitle: 'Our Mission',
+                missionDesc: 'To empower farmers with accessible, affordable, and accurate AI-powered crop disease detection technology that helps them make timely decisions, reduce crop loss, and increase agricultural productivity.',
+                visionTitle: 'Our Vision',
+                visionDesc: 'To create a world where every farmer, regardless of their economic status, has access to cutting-edge technology that helps them grow healthier crops and achieve sustainable livelihoods.',
+                teamTitle: 'Our Team',
+                member1Name: 'Amruta Somwanshi',
+                member1Role: 'Student',
+                member1Desc: 'Computer Engineering',
+                member2Name: 'Prathemesh Wandhare',
+                member2Role: 'Student',
+                member2Desc: 'Computer Engineering',
+                member3Name: 'Vaishnavi Ware',
+                member3Role: 'Student',
+                member3Desc: 'Computer Engineering',
+                ctaTitle: 'Ready to Transform Your Farming?',
+                ctaDesc: 'Join thousands of farmers already using CropCare to grow healthier crops and increase their yields.',
+                footerText: '© 2026 CropCare. All rights reserved. Empowering farmers with AI technology.'
+            },
+            mr: {
+                langCode: 'मराठी',
+                home: 'होम',
+                about: 'आमच्याबद्दल',
+                detect: 'योजना',
+                contact: 'आमच्याशी संपर्क करा',
+                login: 'लॉगिन करा',
+                tryDetector: 'AI डिटेक्टर वापरून पहा',
+                whyUsTitle: 'CropCare का निवडा?',
+                feature1Title: 'AI संचालित',
+                feature1Desc: 'प्रगत मशीन लर्निंग अल्गोरिदम 92% अचूकतेसह रोग रीअल-टाइममध्ये शोधतात.',
+                feature2Title: 'वेगवान आणि अचूक',
+                feature2Desc: 'काही सेकंदांत तात्काल निदान आणि उपचार शिफारसी मिळवा.',
+                feature3Title: 'शेतकरी अनुकूल',
+                feature3Desc: 'शेतात शेतकरीयांसाठी विशेषत: डिझाइन केलेला साधा, सहज इंटरफेस.',
+                feature4Title: 'किफायत बचत',
+                feature4Desc: 'सस्त्या तंत्रज्ञानाने पीकाचे नुकसान कमी करा आणि उत्पादकता वाढवा.',
+                feature5Title: 'मोबाइल तयार',
+                feature5Desc: 'कोणत्याही जागी, कधीही स्मार्टफोनमधून रोग शोध प्रवेश मिळवा.',
+                feature6Title: 'बहु-भाषा',
+                feature6Desc: 'विविध भाषांमध्ये उपलब्ध, शेतकरीयांना विविध प्रदेशांमध्ये समर्थन देणे.',
+                ourGoalsTitle: 'आमचे मिशन आणि व्हिजन',
+                missionTitle: 'आमचे मिशन',
+                missionDesc: 'शेतकरीयांना सुलभ, सुस्वस्त आणि अचूक AI-संचालित पीक रोग शोध तंत्रज्ञान प्रदान करणे जे त्यांना वेळेवर निर्णय घेण्यास, पीकाचे नुकसान कमी करण्यास आणि कृषी उत्पादकता वाढवण्यास मदत करते.',
+                visionTitle: 'आमचे व्हिजन',
+                visionDesc: 'असे जग तयार करणे जेथे प्रत्येक शेतकरी, त्यांची आर्थिक स्थिती काहीही असो, अत्याधुनिक तंत्रज्ञान वापरून अधिक निरोगी पीक उगवू शकेल आणि टिकाऊ आजीविका साध्य करू शकेल.',
+                teamTitle: 'आमची टीम',
+                member1Name: 'अमृता सोमवंशी',
+                member1Role: 'विद्यार्थी',
+                member1Desc: 'संगणक अभियांत्रिकी',
+                member2Name: 'प्रत्यमेश वांधारे',
+                member2Role: 'विद्यार्थी',
+                member2Desc: 'संगणक अभियांत्रिकी',
+                member3Name: 'वैष्णवी वारे',
+                member3Role: 'विद्यार्थी',
+                member3Desc: 'संगणक अभियांत्रिकी',
+                ctaTitle: 'आपल्या शेतीचे रूपांतरण करण्यास तयार आहात?',
+                ctaDesc: 'CropCare वापरून स्वस्थ पीक उगवणारे आणि उत्पन्न वाढवणारे हजारो शेतकरींना जॉईन व्हा.',
+                footerText: '© 2026 CropCare. सर्व अधिकार सुरक्षित. शेतकरीयांना AI तंत्रज्ञान सशक्त करणे.'
+            },
+            hi: {
+                langCode: 'हिंदी',
+                home: 'होम',
+                about: 'हमारे बारे में',
+                detect: 'योजना',
+                contact: 'हमसे संपर्क करें',
+                login: 'लॉगिन करें',
+                tryDetector: 'AI डिटेक्टर आजमाएं',
+                whyUsTitle: 'CropCare को क्यों चुनें?',
+                feature1Title: 'AI संचालित',
+                feature1Desc: 'उन्नत मशीन लर्निंग एल्गोरिदम 92% सटीकता के साथ रीयल-टाइम में रोग का पता लगाते हैं।',
+                feature2Title: 'तेज़ और सटीक',
+                feature2Desc: 'कुछ सेकंड के भीतर तत्काल निदान और उपचार सिफारिशें प्राप्त करें।',
+                feature3Title: 'किसान अनुकूल',
+                feature3Desc: 'खेत में किसानों के लिए विशेष रूप से डिज़ाइन किया गया सरल, सहज इंटरफ़ेस।',
+                feature4Title: 'लागत प्रभावी',
+                feature4Desc: 'सस्ती तकनीक के साथ फसल का नुकसान कम करें और उत्पादकता बढ़ाएं।',
+                feature5Title: 'मोबाइल के लिए तैयार',
+                feature5Desc: 'कहीं भी, कभी भी अपने स्मार्टफोन से सीधे रोग पहचान तक पहुंचें।',
+                feature6Title: 'बहु-भाषा',
+                feature6Desc: 'विभिन्न क्षेत्रों में किसानों का समर्थन करने के लिए कई भाषाओं में उपलब्ध।',
+                ourGoalsTitle: 'हमारे मिशन और दृष्टि',
+                missionTitle: 'हमारा मिशन',
+                missionDesc: 'किसानों को सुलभ, सस्ती और सटीक AI-संचालित फसल रोग पहचान तकनीक प्रदान करना जो उन्हें समय पर निर्णय लेने, फसल के नुकसान को कम करने और कृषि उत्पादकता बढ़ाने में मदद करती है।',
+                visionTitle: 'हमारी दृष्टि',
+                visionDesc: 'ऐसी दुनिया बनाना जहां हर किसान, उनकी आर्थिक स्थिति चाहे कुछ भी हो, अत्याधुनिक तकनीक तक पहुंच सके जो उन्हें स्वस्थ फसलें उगाने और टिकाऊ आजीविका हासिल करने में मदद करती है।',
+                teamTitle: 'हमारी टीम',
+                member1Name: 'अमृता सोमवंशी',
+                member1Role: 'विद्यार्थी',
+                member1Desc: 'कंप्यूटर इंजीनियरिंग',
+                member2Name: 'प्रत्यमेश वांधारे',
+                member2Role: 'विद्यार्थी',
+                member2Desc: 'कंप्यूटर इंजीनियरिंग',
+                member3Name: 'वैष्णवी वारे',
+                member3Role: 'विद्यार्थी',
+                member3Desc: 'कंप्यूटर इंजीनियरिंग',
+                ctaTitle: 'आपकी खेती को बदलने के लिए तैयार हैं?',
+                ctaDesc: 'CropCare का उपयोग करके स्वस्थ फसलें उगाने वाले हजारों किसानों के साथ जुड़ें।',
+                footerText: '© 2026 CropCare. सर्वाधिकार सुरक्षित। AI तकनीक के साथ किसानों को सशक्त बनाना।'
+            },
+            ta: {
+                langCode: 'தமிழ்',
+                home: 'முகப்பு',
+                about: 'எங்களைப் பற்றி',
+                detect: 'திட்டம்',
+                contact: 'தொடர்பு கொள்ளுங்கள்',
+                login: 'உள்நுழையவும்',
+                tryDetector: 'AI கண்டறிதல் முயற்சிக்கவும்',
+                whyUsTitle: 'CropCare ஐ ஏன் தேர்ந்தெடுக்கவும்?',
+                feature1Title: 'AI இயக்கப்பட்ட',
+                feature1Desc: 'மேம்பட்ட மெஷின் லர்னிங் அல்காரிதம்கள் 92% துல்லியத்துடன் நோய்களை கண்டறிகின்றன.',
+                feature2Title: 'வேகமான மற்றும் துல்லியமான',
+                feature2Desc: 'சில வினாடிகளில் உடனடி நோய் கண்டறிதல் மற்றும் சிகிச்சை பரிந்துரை.',
+                feature3Title: 'விவசாயி நட்புரீதியான',
+                feature3Desc: 'விவசாயிகளுக்கு குறிப்பாக வடிவமைக்கப்பட்ட எளிய, உள்ளுணர்வு இடைமுகம்.',
+                feature4Title: 'செலவு-பயனுள்ள',
+                feature4Desc: 'மலிவான தொழில்நுட்பத்தின் மூலம் பயிர் இழப்பை குறைத்து உற்பத்தியை அதிகரிக்கவும்.',
+                feature5Title: 'மொபைல் தயாரம்',
+                feature5Desc: 'எங்கும், எந்த நேரத்திலும் உங்கள் ஸ்மார்ட்ஃபோனிலிருந்து நோய் கண்டறிதல் அணுகவும்.',
+                feature6Title: 'பல மொழிகள்',
+                feature6Desc: 'பல்வேறு பிராந்தியங்களில் விவசாயிகளுக்கு ஆதரவளிக்க பல மொழிகளில் கிடைக்கிறது.',
+                ourGoalsTitle: 'எங்கள் பணி மற்றும் பார்வை',
+                missionTitle: 'எங்கள் பணி',
+                missionDesc: 'விவசாயிகளுக்கு அணுகக்கூடிய, மலிவான மற்றும் துல்லியமான AI-உந்தப்பட்ட பயிர் நோய் கண்டறிதல் தொழில்நுட்பத்தை வழங்குதல்.',
+                visionTitle: 'எங்கள் பார்வை',
+                visionDesc: 'ஒவ்வொரு விவசாயியும், அவர்களின் பொருளாதார நிலை எதுவாக இருந்தாலும், நவீன தொழில்நுட்பத்தை பயன்படுத்தி ஆரோக்கியமான பயிர்களை வளர்க்க முடியும் என்ற உலகம்.',
+                teamTitle: 'எங்கள் குழு',
+                member1Name: 'அம்ருதா சோம்வன்ஷி',
+                member1Role: 'மாணவர்',
+                member1Desc: 'கணினி பொறியியல்',
+                member2Name: 'பிரத்யமேஷ் வாண்டாரே',
+                member2Role: 'மாணவர்',
+                member2Desc: 'கணினி பொறியியல்',
+                member3Name: 'வைஷ்ணவி வாரே',
+                member3Role: 'மாணவர்',
+                member3Desc: 'கணினி பொறியியல்',
+                ctaTitle: 'உங்கள் விவசாயத்தை மாற்றுவதற்கு தயாரா?',
+                ctaDesc: 'CropCare ஐ பயன்படுத்தும் ஆயிரக்கணக்கான விவசாயிகளுடன் சேரவும்.',
+                footerText: '© 2026 CropCare. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டுள்ளன. AI தொழில்நுட்பத்தின் மூலம் விவசாயிகளை சக்திப்படுத்துதல்.'
+            }
+        };
+
+        // ─── Core Translation Function ──────────────────────────────────────
+        // Uses data-i18n attribute to find and update every element
+        function changeLanguage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                const key = el.getAttribute('data-i18n');
+                if (t[key] !== undefined) {
+                    el.textContent = t[key];
+                }
+            });
+
+            // Update the language code shown in the nav button
+            document.getElementById('langDisplay').textContent = t.langCode;
+
+            // Save user preference
+            localStorage.setItem('selectedLanguage', lang);
+        }
+
+        // ─── Dropdown Toggle ────────────────────────────────────────────────
+        document.getElementById('languageBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('languageDropdown').classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.language-selector')) {
+                document.getElementById('languageDropdown').classList.remove('active');
+            }
+        });
+
+        // ─── Language Option Click ──────────────────────────────────────────
+        document.querySelectorAll('.lang-option').forEach(function(option) {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+
+                // Apply translation
+                changeLanguage(lang);
+
+                // Update active highlight in dropdown
+                document.querySelectorAll('.lang-option').forEach(function(o) {
+                    o.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Close dropdown
+                document.getElementById('languageDropdown').classList.remove('active');
+            });
+        });
+
+        // ─── Load Saved Language on Page Start ─────────────────────────────
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+            changeLanguage(savedLang);
+
+            // Highlight the correct option in the dropdown
+            const activeOption = document.querySelector('.lang-option[data-lang="' + savedLang + '"]');
+            if (activeOption) {
+                document.querySelectorAll('.lang-option').forEach(function(o) {
+                    o.classList.remove('active');
+                });
+                activeOption.classList.add('active');
+            }
+        });
+    </script>
+
+</body>
+</html>

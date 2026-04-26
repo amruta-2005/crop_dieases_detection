@@ -1,0 +1,18 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "backend/node_modules": true,
+    "ml/dataset": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "backend/node_modules": true,
+    "ml/dataset": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "backend/node_modules/**": true,
+    "ml/dataset/**": true
+  }
+}

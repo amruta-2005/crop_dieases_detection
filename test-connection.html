@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Connection Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .status {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        .status-label {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-message {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            color: #004085;
+            font-size: 0.9rem;
+        }
+
+        .info h3 {
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .info ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .info li {
+            margin: 0.3rem 0;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Backend Connection Test</h1>
+
+        <!-- Status Indicators -->
+        <div id="mongoStatus" class="status pending">
+            <div class="status-label">📁 MongoDB Connection</div>
+            <div class="status-message">Testing...</div>
+        </div>
+
+        <div id="backendStatus" class="status pending">
+            <div class="status-label">🚀 Backend Server</div>
+            <div class="status-message">Testing...</div>
+        </div>
+
+        <div id="apiStatus" class="status pending">
+            <div class="status-label">🔌 API Connection</div>
+            <div class="status-message">Testing...</div>
+        </div>
+
+        <div id="authStatus" class="status pending">
+            <div class="status-label">🔐 Authentication API</div>
+            <div class="status-message">Testing...</div>
+        </div>
+
+        <!-- Test Button -->
+        <button onclick="runAllTests()">RUN ALL TESTS</button>
+
+        <!-- Info Box -->
+        <div class="info">
+            <h3>📋 What This Test Does:</h3>
+            <ul>
+                <li>Checks if backend server is running</li>
+                <li>Tests MongoDB connection status</li>
+                <li>Verifies API endpoints work</li>
+                <li>Tests actual signup API</li>
+            </ul>
+            <h3 style="margin-top: 1rem;">❌ If Tests Fail:</h3>
+            <ul>
+                <li>Make sure backend is running: <code>npm start</code></li>
+                <li>Make sure MongoDB is running</li>
+                <li>Check .env file has correct values</li>
+                <li>Ensure port 5000 is available</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // Status Update Function
+        function updateStatus(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${status}`;
+
+            const messageEl = element.querySelector('.status-message');
+            messageEl.textContent = message;
+
+            const label = element.querySelector('.status-label');
+            
+            if (status === 'success') {
+                label.textContent = '✅ ' + label.textContent;
+            } else if (status === 'error') {
+                label.textContent = '❌ ' + label.textContent;
+            } else if (status === 'pending') {
+                label.textContent = '⏳ ' + label.textContent;
+            }
+        }
+
+        // Test 1: Check Backend Server
+        async function testBackendServer() {
+            try {
+                const response = await fetch('http://localhost:5000/health', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const data = await response.json();
+                updateStatus('backendStatus', 'success', '✅ Backend is running on http://localhost:5000');
+                return true;
+            } catch (error) {
+                updateStatus('backendStatus', 'error', 
+                    '❌ Cannot connect to backend. Make sure: 1) Backend is running (npm start), 2) Port 5000 is available');
+                return false;
+            }
+        }
+
+        // Test 2: Check MongoDB Status
+        async function testMongoDB() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.status === 401) {
+                    // 401 is expected (no token)
+                    updateStatus('mongoStatus', 'success', '✅ MongoDB is connected');
+                    return true;
+                }
+            } catch (error) {
+                updateStatus('mongoStatus', 'error', 
+                    '❌ Cannot reach MongoDB. Make sure: 1) MongoDB is running (mongod), 2) .env has correct MONGO_URI');
+                return false;
+            }
+        }
+
+        // Test 3: Test API Connection
+        async function testAPIConnection() {
+            try {
+                const response = await fetch('http://localhost:5000/', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                updateStatus('apiStatus', 'success', '✅ API is accessible on http://localhost:5000');
+                return true;
+            } catch (error) {
+                updateStatus('apiStatus', 'error', 
+                    '❌ API not accessible. Backend might not be running on port 5000');
+                return false;
+            }
+        }
+
+        // Test 4: Test Authentication Endpoint
+        async function testAuthAPI() {
+            try {
+                // Create a test user
+                const testEmail = `test_${Date.now()}@example.com`;
+                
+                const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Test User',
+                        address: '123 Test Lane',
+                        city: 'Test City',
+                        contact: '9876543210',
+                        email: testEmail,
+                        password: 'testpass123',
+                        confirmPassword: 'testpass123'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    updateStatus('authStatus', 'success', 
+                        `✅ Authentication API working! Test user created: ${testEmail}`);
+                    return true;
+                } else if (data.message && data.message.includes('already registered')) {
+                    updateStatus('authStatus', 'success', 
+                        '✅ Authentication API working (email already exists from previous test)');
+                    return true;
+                } else {
+                    updateStatus('authStatus', 'error', 
+                        `❌ Auth API error: ${data.message}`);
+                    return false;
+                }
+            } catch (error) {
+                updateStatus('authStatus', 'error', 
+                    `❌ Authentication API error: ${error.message}`);
+                return false;
+            }
+        }
+
+        // Run All Tests
+        async function runAllTests() {
+            const button = document.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'Running Tests...';
+
+            // Reset all statuses
+            document.querySelectorAll('.status').forEach(el => {
+                el.className = 'status pending';
+                el.querySelector('.status-label').textContent = el.querySelector('.status-label').textContent.replace('✅', '').replace('❌', '').replace('⏳', '').trim();
+            });
+
+            // Run tests in sequence
+            const backendOK = await testBackendServer();
+            await new Promise(r => setTimeout(r, 500));
+
+            const mongoOK = await testMongoDB();
+            await new Promise(r => setTimeout(r, 500));
+
+            const apiOK = await testAPIConnection();
+            await new Promise(r => setTimeout(r, 500));
+
+            const authOK = await testAuthAPI();
+
+            button.disabled = false;
+            button.textContent = 'RUN ALL TESTS';
+
+            // Summary
+            const allPass = backendOK && mongoOK && apiOK && authOK;
+            if (allPass) {
+                alert('✅ All tests passed! Your backend is working correctly.\n\nYou can now use the application.');
+            } else {
+                alert('❌ Some tests failed. Check the status messages above for more details.');
+            }
+        }
+
+        // Run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

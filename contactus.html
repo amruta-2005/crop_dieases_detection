@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - CropCare</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #073622; color: #fff; }
+
+        /* Navigation (copied from about.html) */
+        nav {
+            background-color: #1a6b4a;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .logo { display:flex; align-items:center; gap:0.5rem; color:white; font-size:1.5rem; font-weight:bold; text-decoration:none; }
+        .logo-icon { width:35px; height:35px; background-color:#a4d65e; border-radius:5px; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#1a6b4a; }
+        .nav-links { display:flex; gap:2rem; align-items:center; list-style:none; }
+        .nav-links a { color:white; text-decoration:none; font-weight:500; transition:color .3s; padding:0.5rem 0.75rem; border-radius:4px; }
+        .nav-links a:hover { color:#a4d65e; background-color: rgba(164,214,94,0.1); }
+        .nav-links .active { color:#a4d65e; }
+        .auth-buttons { display:flex; gap:1rem; align-items:center; }
+        .login-btn { background:transparent; color:white; border:2px solid white; padding:0.5rem 1.25rem; border-radius:4px; cursor:pointer; font-weight:600; }
+        .cta-btn { background-color:#a4d65e; color:#1a6b4a; border:none; padding:0.75rem 1.5rem; border-radius:4px; cursor:pointer; font-weight:600; }
+
+        /* Language Dropdown (copied from about.html for consistent navbar) */
+        .language-selector { position: relative; }
+        .language-btn { background-color: transparent; color: white; border: 2px solid white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; }
+        .language-btn:hover { background-color: rgba(164, 214, 94, 0.2); border-color: #a4d65e; color: #a4d65e; }
+        .language-dropdown { position: absolute; top: 100%; right: 0; background-color: #1a6b4a; border: 2px solid #a4d65e; border-radius: 4px; list-style: none; min-width: 150px; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); display: none; z-index: 1000; overflow: hidden; }
+        .language-dropdown.active { display: block; }
+        .language-dropdown li { margin: 0; }
+        .language-dropdown a { display: block; color: white; text-decoration: none; padding: 0.75rem 1.25rem; transition: all 0.3s ease; font-weight: 500; border: none; }
+        .language-dropdown a:hover { background-color: #a4d65e; color: #1a6b4a; }
+        .language-dropdown a.active { background-color: #a4d65e; color: #1a6b4a; }
+
+        /* Hero */
+        .hero {
+            background-color: #073622;
+            color: white;
+            padding: 6rem 2rem 4rem 2rem;
+            min-height: 55vh;
+        }
+
+        .hero-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 520px;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .hero-left h1 { font-size: 3rem; color: #eaf6ef; margin-bottom: 1rem; }
+        .hero-left p { color: #d4eadf; margin-bottom: 1.5rem; font-size:1.05rem; }
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+
+        .card {
+            background: white;
+            color: #0f3f2a;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+            min-height: 260px;
+        }
+
+        .card h3 { margin-bottom: 0.5rem; }
+        .card p { color: #444; margin-bottom: 0.75rem; }
+        .card .phone { font-weight:700; color:#1a6b4a; }
+        .card .btn { display:inline-block; margin-top:0.5rem; background:#a4d65e; color:#0f3f2a; padding:0.5rem 0.85rem; border-radius:6px; text-decoration:none; font-weight:600; }
+
+        .hero-right { text-align:center; }
+        .hero-right img { max-width:100%; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.2); height:520px; object-fit:cover; }
+
+        /* Small helper to make cards stack on mobile */
+        @media (max-width: 1100px) {
+            .hero-container { grid-template-columns: 1fr 420px; }
+            .hero-right img { height:420px; }
+        }
+
+        @media (max-width: 900px) {
+            .hero-container { grid-template-columns: 1fr; }
+            .cards { grid-template-columns: 1fr; }
+            .hero-right img { height:280px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation (same as about.html, contact link active) -->
+    <nav>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">AC</div>
+            <span>AgroCare</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="yojana.html">Yojana</a></li>
+            <li><a href="contactus.html" class="active">Contact Us</a></li>
+        </ul>
+        <div class="language-selector">
+            <button class="language-btn" id="languageBtn">
+                <span>🌐</span>
+                <span id="langDisplay">EN</span>
+            </button>
+            <ul class="language-dropdown" id="languageDropdown">
+                <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+                <li><a href="#" class="lang-option" data-lang="mr">मराठी (Marathi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="hi">हिंदी (Hindi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="ta">தமிழ் (Tamil)</a></li>
+            </ul>
+        </div>
+        <div class="auth-buttons">
+            <a href='login.html'><button class="login-btn">Log In</button></a>
+           <a href="detect_details.html"> <button class="cta-btn">Try AI Detector</button></a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-left">
+                <h1 id="contactTitle">Get in touch.</h1>
+                <p id="contactSubtitle">We are building this platform to support farmers.
+                                    Your questions and ideas are important to us.
+                                    Reach out for help, suggestions, or feedback.
+                                    Together, we can improve farming solutions.</p>
+
+                <div class="cards">
+                    <div class="card">
+                        <p id="talkDesc">Hello! I am a student developer working on this website to support farmers with easy access to agricultural information and smart farming solutions. If you have any questions, suggestions, or need help using the website, feel free to contact me.</p>
+                        <div class="phone" id="talkPhone">+91 89996 16382</div>
+                    </div>
+                    <div class="card">
+                        <p id="supportDesc">I am a student contributor to this project, helping in building a digital platform for farmers. You can contact me for feedback, technical support, or ideas to improve this website for better farming assistance.</p>
+                        <div class="phone" id="supportPhone">+91 98815 65431</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <!-- Replacing cartoon with farm.avif from workspace -->
+                <img src="contact.webp" alt="Farm illustration">
+            </div>
+        </div>
+    </section>
+
+    
+
+    <script>
+        // Translations and language switching (copied / adapted from about.html)
+        const translations = {
+            en: {
+                contactTitle: 'Get in touch.',
+                contactSubtitle: "We are building this platform to support farmers. Your questions and ideas are important to us. Reach out for help, suggestions, or feedback. Together, we can improve farming solutions.",
+                talkDesc: "Hello! I am a student developer working on this website to support farmers with easy access to agricultural information and smart farming solutions. If you have any questions, suggestions, or need help using the website, feel free to contact me.",
+                talkPhone: '+91 89996 16382',
+                supportDesc: "I am a student contributor to this project, helping in building a digital platform for farmers. You can contact me for feedback, technical support, or ideas to improve this website for better farming assistance.",
+                supportPhone: '+91 98815 65431',
+                home: 'Home',
+                about: 'About Us',
+                detect: 'Yojana',
+                contact: 'Contact Us',
+                login: 'Log In',
+                tryDetector: 'Try AI Detector',
+                footerText: '© 2026 CropCare. All rights reserved.'
+            },
+            mr: {
+                contactTitle: 'संपर्क करा.',
+                contactSubtitle: ' आम्ही शेतकऱ्यांना मदत करण्यासाठी ही प्लॅटफॉर्म तयार करत आहोत. तुमचे प्रश्न आणि कल्पना आमच्यासाठी महत्त्वाचे आहेत. मदतीसाठी, सूचना किंवा अभिप्रायासाठी संपर्क करा. एकत्रितपणे, आपण शेती उपाय सुधारू शकतो.',
+                talkDesc: 'नमस्कार! मी एक विद्यार्थी विकसक आहे आणि शेतकऱ्यांना कृषी माहिती व स्मार्ट शेती उपाय सहजपणे उपलब्ध व्हावेत यासाठी ही वेबसाइट विकसित केली आहे. तुम्हाला काही प्रश्न, सूचना किंवा वेबसाइट वापरण्यास मदत हवी असल्यास, कृपया माझ्याशी संपर्क साधा.',
+                talkPhone: '+91 89996 16382',
+                supportDesc: 'मी या प्रकल्पाचा एक विद्यार्थी योगदानकर्ता आहे, शेतकऱ्यांसाठी डिजिटल प्लॅटफॉर्म तयार करण्यात मदत करत आहे. तुम्ही मला अभिप्राय, तांत्रिक समर्थन किंवा या वेबसाइटला सुधारण्यासाठी कल्पना यासाठी संपर्क करू शकता.',
+                supportPhone: '+91 98815 65431',
+                home: 'होम',
+                about: 'आमच्याबद्दल',
+                detect: 'योजना',
+                contact: 'आमच्याशी संपर्क करा',
+                login: 'लॉगिन करा',
+                tryDetector: 'AI डिटेक्टर वापरून पहा',
+                footerText: '© 2026 CropCare. सर्व अधिकार सुरक्षित.'
+            },
+            hi: {
+                contactTitle: 'संपर्क करें।',
+                contactSubtitle: 'हम इस प्लेटफ़ॉर्म को किसानों का समर्थन करने के लिए बना रहे हैं। आपके प्रश्न और विचार हमारे लिए महत्वपूर्ण हैं। मदद, सुझाव या प्रतिक्रिया के लिए संपर्क करें। साथ मिलकर, हम खेती के समाधान में सुधार कर सकते हैं।',
+                talkDesc: 'नमस्कार! मैं एक छात्र डेवलपर हूँ और यह वेबसाइट किसानों को कृषि संबंधी जानकारी और स्मार्ट खेती समाधान आसानी से उपलब्ध कराने के लिए बनाई गई है। यदि आपके पास कोई प्रश्न, सुझाव हों या वेबसाइट उपयोग करने में सहायता चाहिए, तो कृपया मुझसे संपर्क करें।',
+                talkPhone: '+91 89996 16382',
+                supportDesc: 'मैं इस परियोजना में एक छात्र सहयोगी हूँ और किसानों के लिए एक डिजिटल प्लेटफ़ॉर्म बनाने में सहायता कर रहा हूँ। इस वेबसाइट को बेहतर बनाने के लिए आप अपने सुझाव, तकनीकी सहायता या फीडबैक के लिए मुझसे संपर्क कर सकते हैं।',
+                supportPhone: '+91 98815 65431',
+                home: 'होम',
+                about: 'हमारे बारे में',
+                detect: 'योजना',
+                contact: 'हमसे संपर्क करें',
+                login: 'लॉगिन करें',
+                tryDetector: 'AI डिटेक्टर आजमाएं',
+                footerText: '© 2026 CropCare. सर्वाधिकार सुरक्षित।'
+            },
+            ta: {
+                contactTitle: 'தொடர்புக்கு வருக.',
+                contactSubtitle: 'நாம் விவசாயிகளுக்கு ஆதரவாக இந்த தளத்தை உருவாக்கி வருகிறோம். உங்கள் கேள்விகள் மற்றும் கருத்துக்கள் எங்களுக்கு முக்கியமானவை. உதவி, பரிந்துரைகள் அல்லது கருத்துக்களுக்காக தொடர்பு கொள்ளுங்கள். ஒன்றாக சேர்ந்து, நாம் விவசாய தீர்வுகளை மேம்படுத்தலாம்.',
+                talkDesc: 'வணக்கம்! நான் ஒரு மாணவர் உருவாக்குநர். விவசாயிகளுக்கு வேளாண் தொடர்பான தகவல்கள் மற்றும் ஸ்மார்ட் விவசாய தீர்வுகளை எளிதாக வழங்க இந்த இணையதளத்தை உருவாக்கியுள்ளேன். உங்களுக்கு ஏதேனும் கேள்விகள், பரிந்துரைகள் அல்லது இணையதளத்தை பயன்படுத்த உதவி தேவைப்பட்டால், தயவுசெய்து என்னை தொடர்பு கொள்ளுங்கள்.',
+                talkPhone: '+91 89996 16382',
+                supportDesc: 'நான் இந்த திட்டத்தில் ஒரு மாணவர் பங்களிப்பாளர் மற்றும் விவசாயிகளுக்கான ஒரு டிஜிட்டல் தளத்தை உருவாக்க உதவுகிறேன். இந்த இணையதளத்தை மேம்படுத்த உங்கள் கருத்துகள், தொழில்நுட்ப ஆதரவு அல்லது கருத்துக்களுக்காக என்னை தொடர்பு கொள்ளலாம்.',
+                supportPhone: '+91 98815 65431',
+                home: 'முகப்பு',
+                about: 'எங்கள் பற்றி',
+                detect: 'திட்டம்',
+                contact: 'எங்களைத் தொடர்பு கொள்ளுங்கள்',
+                login: 'உள்நுழையவும்',
+                tryDetector: 'AI கண்டறிதலை முயற்சிக்கவும்',
+                footerText: '© 2026 CropCare. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.'
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations.en;
+
+            // Update contact page elements
+            const map = {
+                contactTitle: t.contactTitle,
+                contactSubtitle: t.contactSubtitle,
+                talkTitle: t.talkTitle,
+                talkDesc: t.talkDesc,
+                talkPhone: t.talkPhone,
+                viewNumbersBtn: t.viewNumbersBtn,
+                supportTitle: t.supportTitle,
+                supportDesc: t.supportDesc,
+                contactSupportBtn: t.contactSupportBtn,
+                footerText: t.footerText
+            };
+
+            for (const id in map) {
+                const el = document.getElementById(id);
+                if (el) el.textContent = map[id];
+            }
+
+            // Update nav labels
+            const navLinks = document.querySelectorAll('.nav-links a');
+            if (navLinks.length >= 4) {
+                navLinks[0].textContent = t.home;
+                navLinks[1].textContent = t.about;
+                navLinks[2].textContent = t.detect;
+                navLinks[3].textContent = t.contact;
+            }
+
+            // Update buttons
+            const loginBtn = document.querySelector('.login-btn');
+            const ctaBtn = document.querySelector('.cta-btn');
+            if (loginBtn) loginBtn.textContent = t.login;
+            if (ctaBtn) ctaBtn.textContent = t.tryDetector;
+
+            // Update language display
+            const langCodes = { en: 'EN', mr: 'मराठी', hi: 'हिंदी', ta: 'தமிழ்' };
+            document.getElementById('langDisplay').textContent = langCodes[lang] || 'EN';
+
+            // Persist
+            localStorage.setItem('selectedLanguage', lang);
+        }
+
+        // Dropdown behavior and language selection wiring
+        document.getElementById('languageBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('languageDropdown').classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.language-selector')) {
+                document.getElementById('languageDropdown').classList.remove('active');
+            }
+        });
+
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                const lang = this.getAttribute('data-lang');
+                changeLanguage(lang);
+                document.getElementById('languageDropdown').classList.remove('active');
+            });
+        });
+
+        // Load saved language on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const saved = localStorage.getItem('selectedLanguage') || 'en';
+            // mark active option
+            const opt = document.querySelector(`[data-lang="${saved}"]`);
+            if (opt) {
+                document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+            }
+            changeLanguage(saved);
+        });
+    </script>
+<script src="google-translate-init.js"></script>
+</body>
+</html>

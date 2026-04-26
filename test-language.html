@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Switcher Test</title>
+</head>
+<body>
+    <h1 id="test-heading">Test Heading</h1>
+    <p id="test-description">Test description</p>
+
+    <div class="language-selector">
+        <button class="language-btn" id="languageBtn">
+            <span>🌐</span>
+            <span id="langDisplay">EN</span>
+        </button>
+        <ul class="language-dropdown" id="languageDropdown">
+            <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+            <li><a href="#" class="lang-option" data-lang="mr">मराठी</a></li>
+            <li><a href="#" class="lang-option" data-lang="hi">हिंदी</a></li>
+            <li><a href="#" class="lang-option" data-lang="ta">தமிழ்</a></li>
+        </ul>
+    </div>
+
+    <script src="language-switcher.js"></script>
+    <script>
+        // Test the language switcher
+        console.log('Language Switcher Test Started');
+
+        // Add test translations
+        if (window.LanguageSwitcher) {
+            window.LanguageSwitcher.addTranslation('en', 'testHeading', 'Test Heading');
+            window.LanguageSwitcher.addTranslation('mr', 'testHeading', 'चाचणी शीर्षक');
+            window.LanguageSwitcher.addTranslation('hi', 'testHeading', 'परीक्षण शीर्षक');
+            window.LanguageSwitcher.addTranslation('ta', 'testHeading', 'சோதனை தலைப்பு');
+
+            window.LanguageSwitcher.addTranslation('en', 'testDescription', 'Test description');
+            window.LanguageSwitcher.addTranslation('mr', 'testDescription', 'चाचणी वर्णन');
+            window.LanguageSwitcher.addTranslation('hi', 'testDescription', 'परीक्षण विवरण');
+            window.LanguageSwitcher.addTranslation('ta', 'testDescription', 'சோதனை விவரணம்');
+
+            // Add data-i18n attributes
+            document.getElementById('test-heading').setAttribute('data-i18n', 'testHeading');
+            document.getElementById('test-description').setAttribute('data-i18n', 'testDescription');
+
+            console.log('Test translations added');
+        } else {
+            console.error('LanguageSwitcher not found!');
+        }
+    </script>
+</body>
+</html>

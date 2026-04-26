@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgroCare – How It Works</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #1a5c35; --green-main: #2e7d4f; --green-mid: #3a9d5f;
+      --green-light: #4caf6e; --green-pale: #d4f0df; --accent: #f0c040;
+      --off-white: #f5faf7; --text-dark: #0f2d1c; --text-muted: #4a7a5a;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text-dark); overflow-x: hidden; }
+
+    /* LANG BAR */
+    .lang-bar {
+      background: var(--green-dark); display: flex; justify-content: flex-end;
+      align-items: center; padding: 10px 48px; gap: 10px;
+    }
+    .lang-bar label { color: rgba(255,255,255,.75); font-size: 13px; font-weight: 500; }
+    .lang-select-wrap { position: relative; }
+    .lang-select-wrap::after {
+      content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--accent); pointer-events: none; font-size: 13px;
+    }
+    #langSelect {
+      appearance: none; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
+      color: #fff; border-radius: 8px; padding: 7px 36px 7px 14px;
+      font-size: 14px; font-weight: 600; cursor: pointer; outline: none; transition: background .2s;
+    }
+    #langSelect:hover { background: rgba(255,255,255,.2); }
+    #langSelect option { background: #1a5c35; color: #fff; }
+
+    /* HERO */
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-main) 55%, var(--green-mid) 100%);
+      padding: 2px 2px 2px; text-align: center;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-label {
+      display: inline-block; background: rgba(255,255,255,.15); backdrop-filter: blur(4px);
+      color: var(--accent); border: 1px solid rgba(240,192,64,.3);
+      border-radius: 50px; padding: 6px 18px; font-size: 12px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 22px;
+    }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(34px,5vw,60px); color: #fff; line-height: 1.15; margin-bottom: 20px; }
+    .hero h1 .acgreen { color: var(--accent); }
+    .hero > p { max-width: 600px; margin: 0 auto 36px; color: rgba(255,255,255,.8); font-size: 17px; line-height: 1.7; }
+    .hero-steps-pill {
+      display: inline-flex; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2); border-radius: 50px; overflow: hidden; backdrop-filter: blur(6px);
+    }
+    .hero-steps-pill span { padding: 10px 20px; color: rgba(255,255,255,.85); font-size: 13px; font-weight: 500; border-right: 1px solid rgba(255,255,255,.15); }
+    .hero-steps-pill span:last-child { border-right: none; }
+    .hero-steps-pill span b { color: var(--accent); margin-right: 5px; }
+
+    /* SECTIONS */
+    section { padding: 80px 48px; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-pale); color: var(--green-dark);
+      border-radius: 50px; padding: 6px 16px; font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .section-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-mid); }
+    h2.section-title { font-family: 'Playfair Display', serif; font-size: clamp(26px,3.5vw,44px); color: var(--text-dark); margin-bottom: 14px; line-height: 1.2; }
+    h2.section-title .acgreen { color: var(--green-main); }
+    p.section-sub { color: var(--text-muted); font-size: 16px; line-height: 1.7; max-width: 540px; }
+
+    /* JOURNEY */
+    #journey { background: #fff; }
+    .journey-grid { display: grid; gap: 0; margin-top: 56px; }
+    .journey-item {
+      display: grid; grid-template-columns: 80px 1fr; gap: 0 32px;
+      padding-bottom: 48px; opacity: 0; transform: translateX(-30px); animation: slideIn .5s forwards;
+    }
+    .journey-item:nth-child(1){animation-delay:.1s}.journey-item:nth-child(2){animation-delay:.2s}
+    .journey-item:nth-child(3){animation-delay:.3s}.journey-item:nth-child(4){animation-delay:.4s}
+    .journey-item:nth-child(5){animation-delay:.5s}.journey-item:nth-child(6){animation-delay:.6s}
+    @keyframes slideIn { to { opacity:1; transform:none; } }
+    .step-spine { display:flex; flex-direction:column; align-items:center; }
+    .step-num {
+      width:52px; height:52px; border-radius:50%; background:var(--green-main); color:#fff;
+      display:grid; place-items:center; font-family:'Playfair Display',serif; font-size:20px; font-weight:700;
+      flex-shrink:0; z-index:1; box-shadow:0 4px 18px rgba(46,125,79,.35);
+    }
+    .step-line { flex:1; width:2px; background:linear-gradient(to bottom,var(--green-light),var(--green-pale)); margin-top:8px; }
+    .journey-item:last-child .step-line { display:none; }
+    .step-body { padding-top:10px; }
+    .step-icon-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+    .step-emoji { font-size:28px; }
+    .step-tag { background:var(--green-pale); color:var(--green-dark); border-radius:6px; padding:3px 10px; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.8px; }
+    .step-body h3 { font-size:20px; font-weight:600; color:var(--text-dark); margin-bottom:8px; }
+    .step-body p { color:var(--text-muted); font-size:15px; line-height:1.7; max-width:560px; }
+    .step-features { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .feat-chip {
+      display:flex; align-items:center; gap:6px;
+      background:var(--off-white); border:1px solid var(--green-pale);
+      border-radius:20px; padding:5px 13px; font-size:13px; color:var(--green-dark);
+    }
+    .feat-chip::before { content:'✓'; color:var(--green-mid); font-weight:700; }
+
+    /* FEATURE CARDS */
+    #features { background:var(--off-white); }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; margin-top:52px; }
+    .feat-card {
+      background:#fff; border-radius:16px; padding:32px 28px;
+      border:1px solid rgba(76,175,110,.15); box-shadow:0 2px 20px rgba(0,0,0,.04);
+      transition:transform .2s,box-shadow .2s; position:relative; overflow:hidden;
+    }
+    .feat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
+    .feat-card.c1::before{background:linear-gradient(90deg,#2e7d4f,#4caf6e)}
+    .feat-card.c2::before{background:linear-gradient(90deg,#f0c040,#ff9800)}
+    .feat-card.c3::before{background:linear-gradient(90deg,#4fc3f7,#0288d1)}
+    .feat-card.c4::before{background:linear-gradient(90deg,#ef9a9a,#e53935)}
+    .feat-card.c5::before{background:linear-gradient(90deg,#ce93d8,#8e24aa)}
+    .feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
+    .feat-card-icon{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:26px;margin-bottom:18px}
+    .c1 .feat-card-icon{background:#e8f5e9}.c2 .feat-card-icon{background:#fff8e1}
+    .c3 .feat-card-icon{background:#e1f5fe}.c4 .feat-card-icon{background:#ffebee}.c5 .feat-card-icon{background:#f3e5f5}
+    .feat-card h3{font-size:18px;font-weight:600;color:var(--text-dark);margin-bottom:10px}
+    .feat-card p{font-size:14px;color:var(--text-muted);line-height:1.65}
+
+    /* FLOW */
+    #flow{background:var(--green-dark)}
+    #flow .section-tag{background:rgba(255,255,255,.1);color:var(--accent)}
+    #flow .section-tag .dot{background:var(--accent)}
+    #flow h2.section-title{color:#fff}
+    #flow h2.section-title .acgreen{color:var(--accent)}
+    #flow p.section-sub{color:rgba(255,255,255,.7)}
+    .flow-diagram{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin-top:52px}
+    .flow-node{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:22px 20px;text-align:center;width:140px;backdrop-filter:blur(6px);transition:background .2s}
+    .flow-node:hover{background:rgba(255,255,255,.15)}
+    .fn-icon{font-size:30px;margin-bottom:10px}
+    .fn-label{color:#fff;font-size:13px;font-weight:600;line-height:1.4}
+    .fn-sub{opacity:.7;font-size:11px;display:block;margin-top:2px}
+    .flow-arrow{color:var(--accent);font-size:22px;padding:0 6px;flex-shrink:0}
+
+    /* CTA */
+    #cta{background:linear-gradient(135deg,var(--green-main),var(--green-dark));text-align:center;padding:80px 48px;position:relative;overflow:hidden}
+    #cta::after{content:'🌱';font-size:180px;position:absolute;right:-20px;bottom:-30px;opacity:.08;user-select:none}
+    #cta h2{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:#fff;margin-bottom:16px}
+    #cta p{color:rgba(255,255,255,.8);font-size:17px;max-width:500px;margin:0 auto 36px}
+    .cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+    .btn-primary{background:var(--accent);color:var(--text-dark);border:none;border-radius:10px;padding:14px 32px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(240,192,64,.4)}
+    .btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4);border-radius:10px;padding:13px 30px;font-weight:600;font-size:15px;cursor:pointer;transition:border-color .2s,background .2s}
+    .btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+
+    /* FOOTER */
+    footer{background:#0f2d1c;padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-badge{width:38px;height:38px;border-radius:8px;background:var(--green-light);display:grid;place-items:center;font-weight:700;color:#fff;font-size:15px}
+    .logo-text{font-family:'Playfair Display',serif;font-size:18px;color:#fff;font-weight:700}
+    footer p{color:rgba(255,255,255,.45);font-size:13px}
+
+    @media(max-width:768px){
+      .lang-bar{padding:10px 20px}
+      section{padding:60px 20px}
+      .hero{padding:60px 20px 70px}
+      .flow-node{width:100px;padding:14px 8px}
+      .flow-arrow{font-size:16px;padding:0 2px}
+      footer{padding:24px 20px}
+      .hero-steps-pill{flex-wrap:wrap;border-radius:14px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- LANGUAGE BAR -->
+<div class="lang-bar">
+  <label for="langSelect">🌐 Language:</label>
+  <div class="lang-select-wrap">
+    <select id="langSelect" onchange="applyLang(this.value)">
+      <option value="en">English</option>
+      <option value="hi">हिंदी (Hindi)</option>
+      <option value="mr">मराठी (Marathi)</option>
+      <option value="ta">தமிழ் (Tamil)</option>
+    </select>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label" data-key="heroLabel">Platform Guide</div>
+  <h1>How <span class="acgreen">AgroCare</span><br><span data-key="heroH1Sub">Works for You</span></h1>
+  <p data-key="heroP">From account creation to AI-powered crop diagnosis — here's everything your farming journey looks like on AgroCare, step by step.</p>
+  <div class="hero-steps-pill">
+    <span><b>01</b><span data-key="pill1">Register</span></span>
+    <span><b>02</b><span data-key="pill2">Upload</span></span>
+    <span><b>03</b><span data-key="pill3">Diagnose</span></span>
+    <span><b>04</b><span data-key="pill4">Prevent</span></span>
+    <span><b>05</b><span data-key="pill5">Plan</span></span>
+  </div>
+</div>
+
+<!-- JOURNEY -->
+<section id="journey">
+  <div class="section-tag"><span class="dot"></span><span data-key="journeyTag">Step-by-Step Journey</span></div>
+  <h2 class="section-title">Your Complete <span class="acgreen">AgroCare</span> <span data-key="journeyTitleEnd">Experience</span></h2>
+  <p class="section-sub" data-key="journeySub">Follow these simple steps to protect your crops using AI, weather insights, and government support.</p>
+
+  <div class="journey-grid">
+    <!-- 1 -->
+    <div class="journey-item">
+      <div class="step-spine"><div class="step-num">1</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-icon-row"><span class="step-emoji">📝</span><span class="step-tag" data-key="s1tag">Account Setup</span></div>
+        <h3 data-key="s1h3">Create Your Account</h3>
+        <p data-key="s1p">Sign up with your name, phone number, and location. AgroCare uses your profile to personalise crop recommendations, regional weather data, and relevant government schemes.</p>
+        <div class="step-features">
+          <span class="feat-chip" data-key="s1c1">Free Registration</span>
+          <span class="feat-chip" data-key="s1c2">Secure Login</span>
+          <span class="feat-chip" data-key="s1c3">Profile Saved</span>
+        </div>
+      </div>
+    </div>
+    <!-- 2 -->
+    <div class="journey-item">
+      <div class="step-spine"><div class="step-num">2</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-icon-row"><span class="step-emoji">📷</span><span class="step-tag" data-key="s2tag">Disease Scanner</span></div>
+        <h3 data-key="s2h3">Upload Crop Image – Get Disease Percentage</h3>
+        <p data-key="s2p">Take a clear photo of your crop leaf or stem and upload it to our first AI model. The system analyses the image and instantly returns a disease severity percentage — telling you how infected the crop is.</p>
+        <div class="step-features">
+          <span class="feat-chip" data-key="s2c1">Upload any photo</span>
+          <span class="feat-chip" data-key="s2c2">Instant % result</span>
+          <span class="feat-chip" data-key="s2c3">Multiple crops</span>
+          <span class="feat-chip" data-key="s2c4">Real-time AI</span>
+        </div>
+      </div>
+    </div>
+    <!-- 3 -->
+    <div class="journey-item">
+      <div class="step-spine"><div class="step-num">3</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-icon-row"><span class="step-emoji">🔬</span><span class="step-tag" data-key="s3tag">Disease Identifier</span></div>
+        <h3 data-key="s3h3">Upload Again – Get Disease Name & Prevention</h3>
+        <p data-key="s3p">Run your photo through our second AI model for a deeper diagnosis. This model identifies the exact disease name, explains its symptoms, and provides step-by-step prevention and treatment advice tailored to your crop.</p>
+        <div class="step-features">
+          <span class="feat-chip" data-key="s3c1">Exact disease name</span>
+          <span class="feat-chip" data-key="s3c2">Symptom details</span>
+          <span class="feat-chip" data-key="s3c3">Treatment steps</span>
+          <span class="feat-chip" data-key="s3c4">Pesticide guidance</span>
+        </div>
+      </div>
+    </div>
+    <!-- 4 -->
+    <div class="journey-item">
+      <div class="step-spine"><div class="step-num">4</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-icon-row"><span class="step-emoji">🌤️</span><span class="step-tag" data-key="s4tag">Weather Forecast</span></div>
+        <h3 data-key="s4h3">View 16-Day Weather Forecast</h3>
+        <p data-key="s4p">AgroCare integrates live weather data for your exact location. See the next 16-day forecast — including rain probability, temperature highs and lows, humidity, and wind — so you can plan irrigation, spraying, and harvesting at the right time.</p>
+        <div class="step-features">
+          <span class="feat-chip" data-key="s4c1">16-day forecast</span>
+          <span class="feat-chip" data-key="s4c2">Rainfall alerts</span>
+          <span class="feat-chip" data-key="s4c3">Humidity & wind</span>
+          <span class="feat-chip" data-key="s4c4">Location-based</span>
+        </div>
+      </div>
+    </div>
+    <!-- 5 -->
+    <div class="journey-item">
+      <div class="step-spine"><div class="step-num">5</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-icon-row"><span class="step-emoji">🏛️</span><span class="step-tag" data-key="s5tag">Govt. Schemes</span></div>
+        <h3 data-key="s5h3">Access Government Yojana Schemes</h3>
+        <p data-key="s5p">Browse government agricultural schemes (Yojana) integrated directly into AgroCare. Find subsidies, crop insurance programs, loan benefits, and support initiatives relevant to your region and crop type — all in one place.</p>
+        <div class="step-features">
+          <span class="feat-chip" data-key="s5c1">PM Kisan & more</span>
+          <span class="feat-chip" data-key="s5c2">Subsidies info</span>
+          <span class="feat-chip" data-key="s5c3">Crop insurance</span>
+          <span class="feat-chip" data-key="s5c4">Regional schemes</span>
+        </div>
+      </div>
+    </div>
+    <!-- 6 -->
+    <div class="journey-item">
+      <div class="step-spine"><div class="step-num">6</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-icon-row"><span class="step-emoji">✅</span><span class="step-tag" data-key="s6tag">Action</span></div>
+        <h3 data-key="s6h3">Take Action & Protect Your Crops</h3>
+        <p data-key="s6p">With your diagnosis, treatment plan, weather schedule, and available government support all in hand — you're fully equipped to protect your harvest and increase agricultural productivity.</p>
+        <div class="step-features">
+          <span class="feat-chip" data-key="s6c1">Save reports</span>
+          <span class="feat-chip" data-key="s6c2">Track crop health</span>
+          <span class="feat-chip" data-key="s6c3">Re-scan anytime</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE CARDS -->
+<section id="features">
+  <div class="section-tag"><span class="dot"></span><span data-key="featTag">Core Features</span></div>
+  <h2 class="section-title"><span data-key="featTitleStart">Everything Inside</span> <span class="acgreen">AgroCare</span></h2>
+  <p class="section-sub" data-key="featSub">Five powerful modules working together to give farmers complete crop-care intelligence.</p>
+  <div class="features-grid">
+    <div class="feat-card c1"><div class="feat-card-icon">🌿</div><h3 data-key="fc1h">Disease % Detection</h3><p data-key="fc1p">Upload a photo and our first AI model instantly calculates the severity of crop infection as a clear percentage score.</p></div>
+    <div class="feat-card c2"><div class="feat-card-icon">🔬</div><h3 data-key="fc2h">Disease Name & Prevention</h3><p data-key="fc2p">A second deep-learning model identifies the exact disease and provides detailed prevention methods and treatment remedies.</p></div>
+    <div class="feat-card c3"><div class="feat-card-icon">🌦️</div><h3 data-key="fc3h">16-Day Weather Forecast</h3><p data-key="fc3p">Hyperlocal weather data for your farm — plan sowing, spraying, and harvesting around accurate forecasts up to 16 days ahead.</p></div>
+    <div class="feat-card c4"><div class="feat-card-icon">🏛️</div><h3 data-key="fc4h">Government Schemes</h3><p data-key="fc4p">All major agricultural Yojana schemes in one place — subsidies, crop insurance, and financial support programs for farmers.</p></div>
+    <div class="feat-card c5"><div class="feat-card-icon">👤</div><h3 data-key="fc5h">Personalised Farmer Profile</h3><p data-key="fc5p">Your account stores your location, crop history, and scan reports so every recommendation is tailored specifically to you.</p></div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section id="flow">
+  <div class="section-tag"><span class="dot"></span><span data-key="flowTag">System Flow</span></div>
+  <h2 class="section-title"><span data-key="flowTitleStart">How the</span> <span class="acgreen" data-key="flowTitleSpan">AI Pipeline</span> <span data-key="flowTitleEnd">Works</span></h2>
+  <p class="section-sub" data-key="flowSub">Under the hood — from your photo to actionable insights.</p>
+  <div class="flow-diagram">
+    <div class="flow-node"><div class="fn-icon">📷</div><div class="fn-label" data-key="fn1">User Uploads Crop Image</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="fn-icon">🤖</div><div class="fn-label" data-key="fn2">AI Model 1</div><span class="fn-sub" data-key="fn2s">Disease %</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="fn-icon">🔬</div><div class="fn-label" data-key="fn3">AI Model 2</div><span class="fn-sub" data-key="fn3s">Name + Cure</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="fn-icon">🌦️</div><div class="fn-label" data-key="fn4">Weather API</div><span class="fn-sub" data-key="fn4s">16-day data</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="fn-icon">🏛️</div><div class="fn-label" data-key="fn5">Govt. Schemes Database</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><div class="fn-icon">✅</div><div class="fn-label" data-key="fn6">Farmer Gets Full Report</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2 data-key="ctaH2">Ready to Protect Your Crops?</h2>
+  <p data-key="ctaP">Join thousands of farmers using AgroCare to detect disease early, plan smarter, and access government support.</p>
+  <div class="cta-buttons">
+    <button class="btn-primary" data-key="ctaBtn1">Create Free Account</button>
+    <button class="btn-outline" data-key="ctaBtn2">Try AI Detector</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="logo" href="#"><div class="logo-badge">AC</div><span class="logo-text">AgroCare</span></a>
+  <p data-key="footerP">© 2026 AgroCare. Empowering farmers with AI.</p>
+</footer>
+
+<script>
+const T = {
+  en: {
+    heroLabel:"Platform Guide", heroH1Sub:"Works for You",
+    heroP:"From account creation to AI-powered crop diagnosis — here's everything your farming journey looks like on AgroCare, step by step.",
+    pill1:"Register", pill2:"Upload", pill3:"Diagnose", pill4:"Prevent", pill5:"Plan",
+    journeyTag:"Step-by-Step Journey", journeyTitleEnd:"Experience",
+    journeySub:"Follow these simple steps to protect your crops using AI, weather insights, and government support.",
+    s1tag:"Account Setup", s1h3:"Create Your Account",
+    s1p:"Sign up with your name, phone number, and location. AgroCare uses your profile to personalise crop recommendations, regional weather data, and relevant government schemes.",
+    s1c1:"Free Registration", s1c2:"Secure Login", s1c3:"Profile Saved",
+    s2tag:"Disease Scanner", s2h3:"Upload Crop Image – Get Disease Percentage",
+    s2p:"Take a clear photo of your crop leaf or stem and upload it to our first AI model. The system analyses the image and instantly returns a disease severity percentage — telling you how infected the crop is.",
+    s2c1:"Upload any photo", s2c2:"Instant % result", s2c3:"Multiple crops", s2c4:"Real-time AI",
+    s3tag:"Disease Identifier", s3h3:"Upload Again – Get Disease Name & Prevention",
+    s3p:"Run your photo through our second AI model for a deeper diagnosis. This model identifies the exact disease name, explains its symptoms, and provides step-by-step prevention and treatment advice tailored to your crop.",
+    s3c1:"Exact disease name", s3c2:"Symptom details", s3c3:"Treatment steps", s3c4:"Pesticide guidance",
+    s4tag:"Weather Forecast", s4h3:"View 16-Day Weather Forecast",
+    s4p:"AgroCare integrates live weather data for your exact location. See the next 16-day forecast — including rain probability, temperature highs and lows, humidity, and wind — so you can plan irrigation, spraying, and harvesting at the right time.",
+    s4c1:"16-day forecast", s4c2:"Rainfall alerts", s4c3:"Humidity & wind", s4c4:"Location-based",
+    s5tag:"Govt. Schemes", s5h3:"Access Government Yojana Schemes",
+    s5p:"Browse government agricultural schemes (Yojana) integrated directly into AgroCare. Find subsidies, crop insurance programs, loan benefits, and support initiatives relevant to your region and crop type — all in one place.",
+    s5c1:"PM Kisan & more", s5c2:"Subsidies info", s5c3:"Crop insurance", s5c4:"Regional schemes",
+    s6tag:"Action", s6h3:"Take Action & Protect Your Crops",
+    s6p:"With your diagnosis, treatment plan, weather schedule, and available government support all in hand — you're fully equipped to protect your harvest and increase agricultural productivity.",
+    s6c1:"Save reports", s6c2:"Track crop health", s6c3:"Re-scan anytime",
+    featTag:"Core Features", featTitleStart:"Everything Inside",
+    featSub:"Five powerful modules working together to give farmers complete crop-care intelligence.",
+    fc1h:"Disease % Detection", fc1p:"Upload a photo and our first AI model instantly calculates the severity of crop infection as a clear percentage score.",
+    fc2h:"Disease Name & Prevention", fc2p:"A second deep-learning model identifies the exact disease and provides detailed prevention methods and treatment remedies.",
+    fc3h:"16-Day Weather Forecast", fc3p:"Hyperlocal weather data for your farm — plan sowing, spraying, and harvesting around accurate forecasts up to 16 days ahead.",
+    fc4h:"Government Schemes", fc4p:"All major agricultural Yojana schemes in one place — subsidies, crop insurance, and financial support programs for farmers.",
+    fc5h:"Personalised Farmer Profile", fc5p:"Your account stores your location, crop history, and scan reports so every recommendation is tailored specifically to you.",
+    flowTag:"System Flow", flowTitleStart:"How the", flowTitleSpan:"AI Pipeline", flowTitleEnd:"Works",
+    flowSub:"Under the hood — from your photo to actionable insights.",
+    fn1:"User Uploads Crop Image", fn2:"AI Model 1", fn2s:"Disease %", fn3:"AI Model 2", fn3s:"Name + Cure",
+    fn4:"Weather API", fn4s:"16-day data", fn5:"Govt. Schemes Database", fn6:"Farmer Gets Full Report",
+    ctaH2:"Ready to Protect Your Crops?",
+    ctaP:"Join thousands of farmers using AgroCare to detect disease early, plan smarter, and access government support.",
+    ctaBtn1:"Create Free Account", ctaBtn2:"Try AI Detector",
+    footerP:"© 2026 AgroCare. Empowering farmers with AI."
+  },
+
+  hi: {
+    heroLabel:"प्लेटफ़ॉर्म गाइड", heroH1Sub:"कैसे काम करता है",
+    heroP:"अकाउंट बनाने से लेकर AI-आधारित फसल रोग निदान तक — AgroCare पर आपकी खेती यात्रा का हर कदम।",
+    pill1:"रजिस्टर", pill2:"अपलोड", pill3:"निदान", pill4:"बचाव", pill5:"योजना",
+    journeyTag:"चरण-दर-चरण यात्रा", journeyTitleEnd:"अनुभव",
+    journeySub:"AI, मौसम जानकारी और सरकारी सहायता से अपनी फसल बचाने के लिए इन सरल चरणों का पालन करें।",
+    s1tag:"अकाउंट सेटअप", s1h3:"अपना अकाउंट बनाएं",
+    s1p:"अपना नाम, फोन नंबर और स्थान दर्ज करके साइन अप करें। AgroCare आपकी प्रोफ़ाइल का उपयोग फसल सिफारिशें, क्षेत्रीय मौसम डेटा और सरकारी योजनाओं को व्यक्तिगत बनाने के लिए करता है।",
+    s1c1:"मुफ़्त पंजीकरण", s1c2:"सुरक्षित लॉगिन", s1c3:"प्रोफ़ाइल सहेजी",
+    s2tag:"रोग स्कैनर", s2h3:"फसल छवि अपलोड करें – रोग प्रतिशत जानें",
+    s2p:"अपनी फसल की पत्ती या तने की स्पष्ट फोटो लें और पहले AI मॉडल पर अपलोड करें। सिस्टम तस्वीर का विश्लेषण करके तुरंत रोग की गंभीरता का प्रतिशत बताता है।",
+    s2c1:"कोई भी फोटो अपलोड करें", s2c2:"तुरंत % परिणाम", s2c3:"कई फसलें", s2c4:"रियल-टाइम AI",
+    s3tag:"रोग पहचानकर्ता", s3h3:"फिर अपलोड करें – रोग का नाम और बचाव जानें",
+    s3p:"गहरे निदान के लिए अपनी फोटो दूसरे AI मॉडल पर चलाएं। यह मॉडल सटीक रोग का नाम बताता है, लक्षण समझाता है और आपकी फसल के अनुसार रोकथाम एवं उपचार के चरण प्रदान करता है।",
+    s3c1:"सटीक रोग का नाम", s3c2:"लक्षण विवरण", s3c3:"उपचार के चरण", s3c4:"कीटनाशक मार्गदर्शन",
+    s4tag:"मौसम पूर्वानुमान", s4h3:"16 दिनों का मौसम पूर्वानुमान देखें",
+    s4p:"AgroCare आपके सटीक स्थान के लिए लाइव मौसम डेटा जोड़ता है। अगले 16 दिनों का पूर्वानुमान देखें — वर्षा संभावना, तापमान, नमी और हवा सहित — ताकि सिंचाई, छिड़काव और कटाई की सही समय पर योजना बना सकें।",
+    s4c1:"16 दिन का पूर्वानुमान", s4c2:"वर्षा अलर्ट", s4c3:"नमी और हवा", s4c4:"स्थान-आधारित",
+    s5tag:"सरकारी योजनाएं", s5h3:"सरकारी योजनाओं तक पहुंचें",
+    s5p:"AgroCare में सीधे जुड़ी सरकारी कृषि योजनाओं (Yojana) को देखें। अपने क्षेत्र और फसल प्रकार से संबंधित सब्सिडी, फसल बीमा कार्यक्रम, ऋण लाभ और सहायता पहल खोजें।",
+    s5c1:"पीएम किसान और अधिक", s5c2:"सब्सिडी जानकारी", s5c3:"फसल बीमा", s5c4:"क्षेत्रीय योजनाएं",
+    s6tag:"कार्रवाई", s6h3:"कदम उठाएं और फसल बचाएं",
+    s6p:"निदान, उपचार योजना, मौसम अनुसूची और उपलब्ध सरकारी सहायता के साथ — आप अपनी फसल की रक्षा और कृषि उत्पादकता बढ़ाने के लिए पूरी तरह तैयार हैं।",
+    s6c1:"रिपोर्ट सहेजें", s6c2:"फसल स्वास्थ्य ट्रैक करें", s6c3:"कभी भी पुनः स्कैन करें",
+    featTag:"मुख्य विशेषताएं", featTitleStart:"AgroCare के अंदर सब कुछ",
+    featSub:"पाँच शक्तिशाली मॉड्यूल मिलकर किसानों को संपूर्ण फसल-देखभाल की जानकारी देते हैं।",
+    fc1h:"रोग % पहचान", fc1p:"फोटो अपलोड करें और हमारा पहला AI मॉडेल तुरंत फसल संक्रमण की गंभीरता को प्रतिशत के रूप में बताता है।",
+    fc2h:"रोग का नाम और बचाव", fc2p:"दूसरा डीप-लर्निंग मॉडल सटीक रोग की पहचान करता है और विस्तृत रोकथाम और उपचार के तरीके प्रदान करता है।",
+    fc3h:"16 दिन का मौसम पूर्वानुमान", fc3p:"आपके खेत के लिए हाइपरलोकल मौसम डेटा — 16 दिन आगे तक सटीक पूर्वानुमान के अनुसार बुवाई, छिड़काव और कटाई की योजना बनाएं।",
+    fc4h:"सरकारी योजनाएं", fc4p:"एक जगह सभी प्रमुख कृषि योजनाएं — सब्सिडी, फसल बीमा और किसानों के लिए वित्तीय सहायता कार्यक्रम।",
+    fc5h:"व्यक्तिगत किसान प्रोफ़ाइल", fc5p:"आपका अकाउंट आपका स्थान, फसल इतिहास और स्कैन रिपोर्ट संग्रहीत करता है ताकि हर सिफारिश आपके लिए विशेष रूप से तैयार हो।",
+    flowTag:"सिस्टम प्रवाह", flowTitleStart:"कैसे काम करती है", flowTitleSpan:"AI पाइपलाइन", flowTitleEnd:"",
+    flowSub:"पर्दे के पीछे — आपकी फोटो से लेकर कार्यनीति तक।",
+    fn1:"उपयोगकर्ता फसल छवि अपलोड करता है", fn2:"AI मॉडल 1", fn2s:"रोग %", fn3:"AI मॉडल 2", fn3s:"नाम + इलाज",
+    fn4:"मौसम API", fn4s:"16-दिन डेटा", fn5:"सरकारी योजना डेटाबेस", fn6:"किसान को पूरी रिपोर्ट",
+    ctaH2:"क्या आप अपनी फसल बचाने के लिए तैयार हैं?",
+    ctaP:"हजारों किसान AgroCare का उपयोग करके रोग का जल्दी पता लगाते हैं, स्मार्ट तरीके से योजना बनाते हैं और सरकारी सहायता प्राप्त करते हैं।",
+    ctaBtn1:"मुफ़्त अकाउंट बनाएं", ctaBtn2:"AI डिटेक्टर आज़माएं",
+    footerP:"© 2026 AgroCare. AI से किसानों को सशक्त बनाना।"
+  },
+
+  mr: {
+    heroLabel:"प्लॅटफॉर्म मार्गदर्शक", heroH1Sub:"कसे काम करते",
+    heroP:"खाते तयार करण्यापासून ते AI-आधारित पीक रोग निदानापर्यंत — AgroCare वर तुमच्या शेतकरी प्रवासातील प्रत्येक पाऊल.",
+    pill1:"नोंदणी", pill2:"अपलोड", pill3:"निदान", pill4:"प्रतिबंध", pill5:"नियोजन",
+    journeyTag:"टप्प्याटप्प्याने प्रवास", journeyTitleEnd:"अनुभव",
+    journeySub:"AI, हवामान माहिती आणि सरकारी सहाय्याचा वापर करून तुमचे पीक वाचवण्यासाठी या सोप्या पायऱ्या अनुसरा.",
+    s1tag:"खाते सेटअप", s1h3:"तुमचे खाते तयार करा",
+    s1p:"तुमचे नाव, फोन नंबर आणि स्थान प्रविष्ट करून साइन अप करा. AgroCare तुमच्या प्रोफाइलचा वापर पीक शिफारसी, प्रादेशिक हवामान डेटा आणि संबंधित सरकारी योजना वैयक्तिकृत करण्यासाठी करते.",
+    s1c1:"मोफत नोंदणी", s1c2:"सुरक्षित लॉगिन", s1c3:"प्रोफाइल जतन",
+    s2tag:"रोग स्कॅनर", s2h3:"पीक फोटो अपलोड करा – रोग टक्केवारी जाणून घ्या",
+    s2p:"तुमच्या पिकाच्या पान किंवा खोडाचा स्पष्ट फोटो काढा आणि पहिल्या AI मॉडेलवर अपलोड करा. सिस्टम प्रतिमेचे विश्लेषण करते आणि रोगाची तीव्रता टक्केवारीत तात्काळ सांगते.",
+    s2c1:"कोणताही फोटो अपलोड करा", s2c2:"तात्काळ % निकाल", s2c3:"अनेक पिके", s2c4:"रिअल-टाइम AI",
+    s3tag:"रोग ओळखणारा", s3h3:"पुन्हा अपलोड करा – रोगाचे नाव आणि प्रतिबंध जाणून घ्या",
+    s3p:"सखोल निदानासाठी तुमचा फोटो दुसऱ्या AI मॉडेलवर चालवा. हे मॉडेल अचूक रोगाचे नाव सांगते, लक्षणे स्पष्ट करते आणि तुमच्या पिकानुसार टप्प्याटप्प्याने प्रतिबंध व उपचार सल्ला देते.",
+    s3c1:"अचूक रोगाचे नाव", s3c2:"लक्षण तपशील", s3c3:"उपचाराचे टप्पे", s3c4:"कीटकनाशक मार्गदर्शन",
+    s4tag:"हवामान अंदाज", s4h3:"16 दिवसांचा हवामान अंदाज पाहा",
+    s4p:"AgroCare तुमच्या अचूक स्थानासाठी लाइव्ह हवामान डेटा एकत्र करते. पुढील 16 दिवसांचा अंदाज पाहा — पाऊस संभाव्यता, तापमान, आर्द्रता आणि वारा यासह — जेणेकरून तुम्ही सिंचन, फवारणी आणि कापणीचे नियोजन करू शकता.",
+    s4c1:"16 दिवसांचा अंदाज", s4c2:"पाऊस अलर्ट", s4c3:"आर्द्रता आणि वारा", s4c4:"स्थान-आधारित",
+    s5tag:"सरकारी योजना", s5h3:"सरकारी योजनांपर्यंत प्रवेश करा",
+    s5p:"AgroCare मध्ये थेट एकत्रित सरकारी कृषी योजना (Yojana) पाहा. तुमच्या क्षेत्र आणि पीक प्रकाराशी संबंधित अनुदान, पीक विमा कार्यक्रम, कर्ज लाभ आणि सहाय्य उपक्रम शोधा.",
+    s5c1:"पीएम किसान आणि अधिक", s5c2:"अनुदान माहिती", s5c3:"पीक विमा", s5c4:"प्रादेशिक योजना",
+    s6tag:"कृती", s6h3:"पाऊल उचला आणि पीक वाचवा",
+    s6p:"निदान, उपचार योजना, हवामान वेळापत्रक आणि उपलब्ध सरकारी सहाय्यासह — तुम्ही तुमची कापणी वाचवण्यासाठी आणि कृषी उत्पादकता वाढवण्यासाठी पूर्णपणे तयार आहात.",
+    s6c1:"अहवाल जतन करा", s6c2:"पीक आरोग्य ट्रॅक करा", s6c3:"कधीही पुन्हा स्कॅन करा",
+    featTag:"मुख्य वैशिष्ट्ये", featTitleStart:"AgroCare मधील सर्वकाही",
+    featSub:"पाच शक्तिशाली मॉड्युल्स मिळून शेतकऱ्यांना संपूर्ण पीक-काळजी माहिती देतात.",
+    fc1h:"रोग % ओळख", fc1p:"फोटो अपलोड करा आणि आमचे पहिले AI मॉडेल तात्काळ पीक संसर्गाची तीव्रता स्पष्ट टक्केवारीत मोजते.",
+    fc2h:"रोगाचे नाव आणि प्रतिबंध", fc2p:"दुसरे डीप-लर्निंग मॉडेल अचूक रोग ओळखते आणि तपशीलवार प्रतिबंध पद्धती व उपचार उपाय प्रदान करते.",
+    fc3h:"16 दिवसांचा हवामान अंदाज", fc3p:"तुमच्या शेतासाठी हायपरलोकल हवामान डेटा — 16 दिवस आगाऊ अचूक अंदाजानुसार पेरणी, फवारणी आणि कापणीचे नियोजन करा.",
+    fc4h:"सरकारी योजना", fc4p:"एका ठिकाणी सर्व प्रमुख कृषी योजना — अनुदान, पीक विमा आणि शेतकऱ्यांसाठी आर्थिक सहाय्य कार्यक्रम.",
+    fc5h:"वैयक्तिक शेतकरी प्रोफाइल", fc5p:"तुमचे खाते तुमचे स्थान, पीक इतिहास आणि स्कॅन अहवाल साठवते जेणेकरून प्रत्येक शिफारस विशेषतः तुमच्यासाठी असेल.",
+    flowTag:"सिस्टम प्रवाह", flowTitleStart:"कशी काम करते", flowTitleSpan:"AI पाइपलाइन", flowTitleEnd:"",
+    flowSub:"पडद्यामागे — तुमच्या फोटोपासून कृती करण्यायोग्य माहितीपर्यंत.",
+    fn1:"वापरकर्ता पीक प्रतिमा अपलोड करतो", fn2:"AI मॉडेल 1", fn2s:"रोग %", fn3:"AI मॉडेल 2", fn3s:"नाव + इलाज",
+    fn4:"हवामान API", fn4s:"16-दिवस डेटा", fn5:"सरकारी योजना डेटाबेस", fn6:"शेतकऱ्याला पूर्ण अहवाल",
+    ctaH2:"तुमचे पीक वाचवण्यासाठी तयार आहात का?",
+    ctaP:"हजारो शेतकरी AgroCare वापरून रोग लवकर शोधतात, स्मार्ट नियोजन करतात आणि सरकारी सहाय्य मिळवतात.",
+    ctaBtn1:"मोफत खाते तयार करा", ctaBtn2:"AI डिटेक्टर वापरून पाहा",
+    footerP:"© 2026 AgroCare. AI ने शेतकऱ्यांना सक्षम करणे."
+  },
+
+  ta: {
+    heroLabel:"தளம் வழிகாட்டி", heroH1Sub:"எப்படி செயல்படுகிறது",
+    heroP:"கணக்கு உருவாக்குவதிலிருந்து AI-இயக்கப்படும் பயிர் நோய் கண்டறிதல் வரை — AgroCare இல் உங்கள் விவசாய பயணத்தின் ஒவ்வொரு படியும்.",
+    pill1:"பதிவு", pill2:"பதிவேற்று", pill3:"கண்டறி", pill4:"தடு", pill5:"திட்டமிடு",
+    journeyTag:"படிப்படியான பயணம்", journeyTitleEnd:"அனுபவம்",
+    journeySub:"AI, வானிலை தகவல்கள் மற்றும் அரசு ஆதரவைப் பயன்படுத்தி உங்கள் பயிரை பாதுகாக்க இந்த எளிய படிகளைப் பின்பற்றுங்கள்.",
+    s1tag:"கணக்கு அமைப்பு", s1h3:"உங்கள் கணக்கை உருவாக்குங்கள்",
+    s1p:"உங்கள் பெயர், தொலைபேசி எண் மற்றும் இடத்தை உள்ளிட்டு பதிவுசெய்யுங்கள். AgroCare உங்கள் சுயவிவரத்தை பயன்படுத்தி பயிர் பரிந்துரைகளை, பிராந்திய வானிலை தரவை மற்றும் தொடர்புடைய அரசு திட்டங்களை தனிப்பயனாக்குகிறது.",
+    s1c1:"இலவச பதிவு", s1c2:"பாதுகாப்பான உள்நுழைவு", s1c3:"சுயவிவரம் சேமிக்கப்பட்டது",
+    s2tag:"நோய் ஸ்கேனர்", s2h3:"பயிர் படத்தை பதிவேற்றுங்கள் – நோய் சதவீதம் அறியுங்கள்",
+    s2p:"உங்கள் பயிரின் இலை அல்லது தண்டின் தெளிவான புகைப்படம் எடுத்து முதல் AI மாதிரியில் பதிவேற்றுங்கள். கணினி படத்தை பகுப்பாய்வு செய்து உடனடியாக நோயின் தீவிரத்தை சதவீதமாக வழங்குகிறது.",
+    s2c1:"எந்த படமும் பதிவேற்றுங்கள்", s2c2:"உடனடி % முடிவு", s2c3:"பல பயிர்கள்", s2c4:"நிகழ்நேர AI",
+    s3tag:"நோய் அடையாளம்", s3h3:"மீண்டும் பதிவேற்றுங்கள் – நோயின் பெயர் மற்றும் தடுப்பு அறியுங்கள்",
+    s3p:"ஆழமான கண்டறிதலுக்கு உங்கள் படத்தை இரண்டாவது AI மாதிரியில் இயக்குங்கள். இந்த மாதிரி சரியான நோயின் பெயரை அடையாளம் காட்டுகிறது, அதன் அறிகுறிகளை விளக்குகிறது மற்றும் படிப்படியான தடுப்பு மற்றும் சிகிச்சை ஆலோசனை வழங்குகிறது.",
+    s3c1:"சரியான நோயின் பெயர்", s3c2:"அறிகுறி விவரங்கள்", s3c3:"சிகிச்சை படிகள்", s3c4:"பூச்சிக்கொல்லி வழிகாட்டுதல்",
+    s4tag:"வானிலை முன்னறிவிப்பு", s4h3:"16 நாள் வானிலை முன்னறிவிப்பைப் பாருங்கள்",
+    s4p:"AgroCare உங்கள் சரியான இடத்திற்கான நேரடி வானிலை தரவை ஒருங்கிணைக்கிறது. அடுத்த 16 நாட்களின் முன்னறிவிப்பைப் பாருங்கள் — மழை வாய்ப்பு, வெப்பநிலை, ஈரப்பதம் மற்றும் காற்று உட்பட — நீர்ப்பாசனம், தெளிப்பு மற்றும் அறுவடையை சரியான நேரத்தில் திட்டமிட.",
+    s4c1:"16 நாள் முன்னறிவிப்பு", s4c2:"மழை எச்சரிக்கை", s4c3:"ஈரப்பதம் மற்றும் காற்று", s4c4:"இடம் சார்ந்தது",
+    s5tag:"அரசு திட்டங்கள்", s5h3:"அரசு யோஜனா திட்டங்களை அணுகுங்கள்",
+    s5p:"AgroCare இல் நேரடியாக ஒருங்கிணைக்கப்பட்ட அரசு விவசாய திட்டங்களை (Yojana) உலாவுங்கள். உங்கள் பிராந்தியம் மற்றும் பயிர் வகைக்கு தொடர்புடைய மானியங்கள், பயிர் காப்பீட்டு திட்டங்கள், கடன் சலுகைகள் மற்றும் ஆதரவு முயற்சிகளை ஒரே இடத்தில் கண்டறியுங்கள்.",
+    s5c1:"PM கிசான் மற்றும் மேலும்", s5c2:"மானியம் தகவல்", s5c3:"பயிர் காப்பீடு", s5c4:"பிராந்திய திட்டங்கள்",
+    s6tag:"நடவடிக்கை", s6h3:"நடவடிக்கை எடுங்கள் மற்றும் பயிரை பாதுகாங்கள்",
+    s6p:"உங்கள் கண்டறிதல், சிகிச்சை திட்டம், வானிலை அட்டவணை மற்றும் கிடைக்கும் அரசு ஆதரவுடன் — உங்கள் அறுவடையை பாதுகாக்கவும் விவசாய உற்பத்தியை மேம்படுத்தவும் நீங்கள் முழுமையாக தயாராக இருக்கிறீர்கள்.",
+    s6c1:"அறிக்கைகளை சேமிக்கவும்", s6c2:"பயிர் ஆரோக்கியத்தை கண்காணிக்கவும்", s6c3:"எப்போதும் மீண்டும் ஸ்கேன் செய்யுங்கள்",
+    featTag:"முக்கிய அம்சங்கள்", featTitleStart:"AgroCare இல் உள்ள அனைத்தும்",
+    featSub:"ஐந்து சக்திவாய்ந்த தொகுதிகள் இணைந்து விவசாயிகளுக்கு முழுமையான பயிர்-பராமரிப்பு தகவல்களை வழங்குகின்றன.",
+    fc1h:"நோய் % கண்டறிதல்", fc1p:"புகைப்படம் பதிவேற்றுங்கள், முதல் AI மாதிரி உடனடியாக பயிர் தொற்றின் தீவிரத்தை தெளிவான சதவீதமாக கணக்கிடுகிறது.",
+    fc2h:"நோயின் பெயர் மற்றும் தடுப்பு", fc2p:"இரண்டாவது டீப்-லேர்னிங் மாதிரி சரியான நோயை அடையாளம் காட்டுகிறது மற்றும் விரிவான தடுப்பு முறைகள் மற்றும் சிகிச்சை தீர்வுகளை வழங்குகிறது.",
+    fc3h:"16 நாள் வானிலை முன்னறிவிப்பு", fc3p:"உங்கள் வயலுக்கான ஹைப்பர்லோக்கல் வானிலை தரவு — 16 நாட்கள் வரை துல்லியமான முன்னறிவிப்பின் அடிப்படையில் விதைப்பு, தெளிப்பு மற்றும் அறுவடையை திட்டமிடுங்கள்.",
+    fc4h:"அரசு திட்டங்கள்", fc4p:"ஒரே இடத்தில் அனைத்து முக்கிய விவசாய யோஜனா திட்டங்கள் — மானியங்கள், பயிர் காப்பீடு மற்றும் விவசாயிகளுக்கான நிதி ஆதரவு திட்டங்கள்.",
+    fc5h:"தனிப்பயனாக்கப்பட்ட விவசாயி சுயவிவரம்", fc5p:"உங்கள் கணக்கு உங்கள் இடம், பயிர் வரலாறு மற்றும் ஸ்கேன் அறிக்கைகளை சேமிக்கிறது, இதனால் ஒவ்வொரு பரிந்துரையும் குறிப்பாக உங்களுக்காக தனிப்பயனாக்கப்படும்.",
+    flowTag:"கணினி ஓட்டம்", flowTitleStart:"எப்படி செயல்படுகிறது", flowTitleSpan:"AI பைப்லைன்", flowTitleEnd:"",
+    flowSub:"திரைக்கு பின்னால் — உங்கள் புகைப்படத்திலிருந்து நடவடிக்கை எடுக்கும் தகவல்கள் வரை.",
+    fn1:"பயனர் பயிர் படத்தை பதிவேற்றுகிறார்", fn2:"AI மாதிரி 1", fn2s:"நோய் %", fn3:"AI மாதிரி 2", fn3s:"பெயர் + சிகிச்சை",
+    fn4:"வானிலை API", fn4s:"16-நாள் தரவு", fn5:"அரசு திட்ட தரவுத்தளம்", fn6:"விவசாயிக்கு முழு அறிக்கை",
+    ctaH2:"உங்கள் பயிரை பாதுகாக்க தயாரா?",
+    ctaP:"ஆயிரக்கணக்கான விவசாயிகள் AgroCare ஐப் பயன்படுத்தி நோயை முன்கூட்டியே கண்டறிகிறார்கள், சிறப்பாக திட்டமிடுகிறார்கள் மற்றும் அரசு ஆதரவை பெறுகிறார்கள்.",
+    ctaBtn1:"இலவச கணக்கை உருவாக்குங்கள்", ctaBtn2:"AI கண்டுபிடிப்பாளரை முயற்சிக்கவும்",
+    footerP:"© 2026 AgroCare. AI மூலம் விவசாயிகளை மேம்படுத்துதல்."
+  }
+};
+
+function applyLang(lang) {
+  const t = T[lang];
+  if (!t) return;
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.getAttribute('data-key');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+}
+</script>
+</body>
+</html>

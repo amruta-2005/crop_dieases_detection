@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroCare Dashboard</title>
+<style>
+  body {
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:#f4faf6;
+  }
+
+  /* Navigation Bar */
+  nav {
+    background-color: #1a6b4a;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width:36px;
+    height:36px;
+    background:#a4d65e;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#1a6b4a;
+    font-weight:800;
+  }
+
+  .nav-links {
+    display:flex;
+    gap:1.25rem;
+    align-items:center;
+    list-style:none;
+    padding-left:0;
+  }
+
+  .nav-links a {
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    padding:0.45rem 0.6rem;
+    border-radius:6px;
+  }
+
+  .nav-links a:hover {
+    color:#1a6b4a;
+    background: rgba(164,214,94,0.12);
+  }
+
+  .nav-links .active { color:#a4d65e; }
+
+  .auth-buttons {
+    display:flex;
+    gap:0.75rem;
+    align-items:center;
+  }
+
+  .login-btn {
+    background:transparent;
+    color:white;
+    border:2px solid white;
+    padding:0.45rem 0.9rem;
+    border-radius:6px;
+    cursor:pointer;
+  }
+
+  .cta-btn {
+    background:#a4d65e;
+    color:#114b35;
+    border:none;
+    padding:0.5rem 1rem;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:700;
+  }
+
+  /* Language Dropdown */
+  .language-selector { position: relative; }
+  .language-btn {
+    background: transparent;
+    color:white;
+    border:2px solid white;
+    padding:0.45rem 0.75rem;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:0.35rem;
+    transition: all 0.3s ease;
+  }
+  .language-btn:hover {
+    background: rgba(164,214,94,0.2);
+    border-color:#a4d65e;
+    color:#a4d65e;
+  }
+
+  .language-dropdown {
+    position:absolute;
+    top:100%;
+    right:0;
+    background:#1a6b4a;
+    border:2px solid #a4d65e;
+    border-radius:6px;
+    list-style:none;
+    min-width:140px;
+    margin-top:0.5rem;
+    box-shadow:0 4px 12px rgba(0,0,0,0.3);
+    display:none;
+    z-index:1000;
+    padding-left:0;
+  }
+  .language-dropdown.active { display:block; }
+  .language-dropdown li { margin:0; }
+  .language-dropdown a {
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:0.6rem 1rem;
+    font-weight:500;
+  }
+  .language-dropdown a:hover, .language-dropdown a.active {
+    background:#a4d65e;
+    color:#1a6b4a;
+  }
+
+  /* Cards Section */
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+
+  .card {
+    background:#ffffff;
+    width: 360px;
+    height: 450px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(6,30,20,0.06);
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size:1rem;
+    font-weight:500;
+    color:#064e3b;
+    cursor:pointer;
+    text-decoration:none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(6,30,20,0.12);
+  }
+
+  .card img {
+    width: 350px;
+    height: 400px;
+    object-fit: cover;
+  }
+
+  .card .card-content {
+    padding: 15px;
+  }
+
+  .card .card-content h3 {
+    margin: 10px 0 5px;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .card .card-content p {
+    font-size: 0.95rem;
+    color: #334155;
+  }
+
+  @media (max-width:960px){
+    .cards-container { flex-direction: column; align-items: center; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">AC</div>
+    <span>AgroCare</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="#" class="active">Yojana</a></li>
+    <li><a href="contactus.html">Contact Us</a></li>
+  </ul>
+
+  <div class="language-selector">
+    <button class="language-btn" id="languageBtn">🌐 <span id="langDisplay">EN</span></button>
+    <ul class="language-dropdown" id="languageDropdown">
+      <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+      <li><a href="#" class="lang-option" data-lang="mr">मराठी</a></li>
+      <li><a href="#" class="lang-option" data-lang="hi">हिंदी</a></li>
+      <li><a href="#" class="lang-option" data-lang="ta">தமிழ்</a></li>
+    </ul>
+  </div>
+
+  <div class="auth-buttons">
+    <a href="login.html"><button class="login-btn">Log In</button></a>
+    <a href="detect_details.html"><button class="cta-btn">Try AI Detector</button></a>
+  </div>
+</nav>
+
+<!-- Three Clickable Cards -->
+<div class="cards-container">
+  <a href="detect.html" class="card">
+    <img src="card1.avif" alt="Crops">
+    <div class="card-content">
+      <h3>Calculate Percentage Of Dieases</h3>
+      <p>Upload crop images to calculate disease percentage.</p>
+    </div>
+  </a>
+
+  <a href="page2.html" class="card">
+    <img src="card2.png" alt="Disease Detection">
+    <div class="card-content">
+      <h3>Detect Diseases</h3>
+      <p>Upload crop images to detect diseases quickly.</p>
+    </div>
+  </a>
+
+  <a href="weather.html" class="card">
+    <img src="card3.webp" alt="Agri Yojana">
+    <div class="card-content">
+      <h3>Weather Forecasting</h3>
+      <p>Get accurate weather forecasts.</p>
+    </div>
+  </a>
+</div>
+
+<script>
+  const detectDetailsTranslations = {
+    en: {
+      navHome: 'Home',
+      navAbout: 'About Us',
+      navYojana: 'Yojana',
+      navContact: 'Contact Us',
+      navLogin: 'Log In',
+      navDetector: 'Try AI Detector',
+      card1Title: 'Calculate Percentage Of Diseases',
+      card1Desc: 'Upload crop images to calculate disease percentage.',
+      card2Title: 'Detect Diseases',
+      card2Desc: 'Upload crop images to detect diseases quickly.',
+      card3Title: 'Weather Forecasting',
+      card3Desc: 'Get accurate weather forecasts.'
+    },
+    mr: {
+      navHome: 'होम',
+      navAbout: 'आमच्याबद्दल',
+      navYojana: 'योजना',
+      navContact: 'संपर्क करा',
+      navLogin: 'लॉग इन',
+      navDetector: 'AI डिटेक्टर वापरून पहा',
+      card1Title: 'रोगांचे टक्केवारी मोजा',
+      card1Desc: 'रोगांचे प्रमाण मोजण्यासाठी पिकांचे फोटो अपलोड करा.',
+      card2Title: 'रोग शोधा',
+      card2Desc: 'पिकांचे फोटो अपलोड करून रोग पटकन शोधा.',
+      card3Title: 'हवामान अंदाज',
+      card3Desc: 'अचूक हवामान अंदाज मिळवा.'
+    },
+    hi: {
+      navHome: 'होम',
+      navAbout: 'हमारे बारे में',
+      navYojana: 'योजना',
+      navContact: 'संपर्क करें',
+      navLogin: 'लॉग इन',
+      navDetector: 'AI डिटेक्टर आजमाएं',
+      card1Title: 'रोग का प्रतिशत निकालें',
+      card1Desc: 'रोग प्रतिशत निकालने के लिए फसल की तस्वीरें अपलोड करें।',
+      card2Title: 'रोग पहचानें',
+      card2Desc: 'फसल की तस्वीरें अपलोड करके रोग जल्दी पहचानें।',
+      card3Title: 'मौसम पूर्वानुमान',
+      card3Desc: 'सटीक मौसम पूर्वानुमान प्राप्त करें।'
+    },
+    ta: {
+      navHome: 'முகப்பு',
+      navAbout: 'எங்களைப் பற்றி',
+      navYojana: 'திட்டம்',
+      navContact: 'தொடர்பு கொள்ளவும்',
+      navLogin: 'உள்நுழையவும்',
+      navDetector: 'AI கண்டறிதலை முயற்சிக்கவும்',
+      card1Title: 'நோய் சதவீதத்தை கணக்கிடுங்கள்',
+      card1Desc: 'நோய் சதவீதத்தை கணக்கிட பயிர் படங்களை பதிவேற்றவும்.',
+      card2Title: 'நோய்களை கண்டறியுங்கள்',
+      card2Desc: 'பயிர் படங்களை பதிவேற்றி நோய்களை விரைவாக கண்டறியுங்கள்.',
+      card3Title: 'வானிலை முன்னறிவிப்பு',
+      card3Desc: 'துல்லியமான வானிலை முன்னறிவிப்பைப் பெறுங்கள்.'
+    }
+  };
+
+  function applyDetectDetailsLanguage(lang) {
+    const t = detectDetailsTranslations[lang] || detectDetailsTranslations.en;
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const cardTitles = document.querySelectorAll('.card-content h3');
+    const cardDescs = document.querySelectorAll('.card-content p');
+
+    if (navLinks[0]) navLinks[0].textContent = t.navHome;
+    if (navLinks[1]) navLinks[1].textContent = t.navAbout;
+    if (navLinks[2]) navLinks[2].textContent = t.navYojana;
+    if (navLinks[3]) navLinks[3].textContent = t.navContact;
+
+    const navLoginBtn = document.querySelector('.auth-buttons .login-btn');
+    const navDetectorBtn = document.querySelector('.auth-buttons .cta-btn');
+    if (navLoginBtn) navLoginBtn.textContent = t.navLogin;
+    if (navDetectorBtn) navDetectorBtn.textContent = t.navDetector;
+
+    if (cardTitles[0]) cardTitles[0].textContent = t.card1Title;
+    if (cardTitles[1]) cardTitles[1].textContent = t.card2Title;
+    if (cardTitles[2]) cardTitles[2].textContent = t.card3Title;
+
+    if (cardDescs[0]) cardDescs[0].textContent = t.card1Desc;
+    if (cardDescs[1]) cardDescs[1].textContent = t.card2Desc;
+    if (cardDescs[2]) cardDescs[2].textContent = t.card3Desc;
+  }
+
+  window.translateDynamicContent = function (language) {
+    applyDetectDetailsLanguage(language);
+  };
+
+  // Language dropdown toggle
+  const languageBtn = document.getElementById('languageBtn');
+  const languageDropdown = document.getElementById('languageDropdown');
+
+  languageBtn.addEventListener('click', () => {
+    languageDropdown.classList.toggle('active');
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.language-selector')) {
+      languageDropdown.classList.remove('active');
+    }
+  });
+
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+      option.classList.add('active');
+      document.getElementById('langDisplay').textContent = option.textContent;
+      languageDropdown.classList.remove('active');
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    applyDetectDetailsLanguage(localStorage.getItem('selectedLanguage') || 'en');
+  });
+</script>
+
+<script src="google-translate-init.js"></script>
+</body>
+</html>

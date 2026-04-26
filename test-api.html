@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Testing - CropCare Backend</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background: #1a1a1a; color: #0f0; padding: 2rem; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #a4d65e; margin-bottom: 2rem; text-align: center; }
+        .test-section { background: #222; border: 1px solid #a4d65e; padding: 1.5rem; margin-bottom: 1.5rem; border-radius: 8px; }
+        .test-title { color: #a4d65e; font-weight: bold; margin-bottom: 1rem; font-size: 1.1rem; }
+        input, button { background: #333; color: #0f0; border: 1px solid #a4d65e; padding: 0.7rem; margin: 0.5rem 0; width: 100%; border-radius: 4px; font-family: 'Courier New'; cursor: pointer; }
+        button:hover { background: #a4d65e; color: #000; }
+        .result { background: #111; padding: 1rem; margin-top: 1rem; border-radius: 4px; border-left: 3px solid #a4d65e; max-height: 300px; overflow-y: auto; }
+        .success { border-left-color: #4ade80; color: #4ade80; }
+        .error { border-left-color: #ef4444; color: #ef4444; }
+        .info { border-left-color: #3b82f6; color: #3b82f6; }
+        .status { margin-top: 1rem; padding: 0.5rem; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 CropCare Backend API Testing 🌾</h1>
+        
+        <!-- Backend Health Check -->
+        <div class="test-section">
+            <div class="test-title">1️⃣ Health Check</div>
+            <button onclick="testHealth()">Check Backend Health</button>
+            <div id="healthResult" class="result"></div>
+        </div>
+
+        <!-- Signup Test -->
+        <div class="test-section">
+            <div class="test-title">2️⃣ Signup (Create Account)</div>
+            <input type="text" id="signupName" placeholder="Name" value="Test Farmer">
+            <input type="email" id="signupEmail" placeholder="Email" value="farmer@test.com">
+            <input type="text" id="signupAddress" placeholder="Address" value="123 Farm Lane">
+            <input type="text" id="signupCity" placeholder="City" value="Village">
+            <input type="text" id="signupContact" placeholder="Contact (10 digits)" value="9876543210">
+            <input type="password" id="signupPassword" placeholder="Password" value="password123">
+            <input type="password" id="signupConfirm" placeholder="Confirm Password" value="password123">
+            <button onclick="testSignup()">Test Signup</button>
+            <div id="signupResult" class="result"></div>
+        </div>
+
+        <!-- Login Test -->
+        <div class="test-section">
+            <div class="test-title">3️⃣ Login (Create Session)</div>
+            <input type="email" id="loginEmail" placeholder="Email" value="farmer@test.com">
+            <input type="password" id="loginPassword" placeholder="Password" value="password123">
+            <button onclick="testLogin()">Test Login</button>
+            <div id="loginResult" class="result"></div>
+        </div>
+
+        <!-- Profile Test -->
+        <div class="test-section">
+            <div class="test-title">4️⃣ Get Profile (Protected Route)</div>
+            <button onclick="testProfile()">Get Profile</button>
+            <div id="profileResult" class="result"></div>
+        </div>
+
+        <!-- Logout Test -->
+        <div class="test-section">
+            <div class="test-title">5️⃣ Logout (Destroy Session)</div>
+            <button onclick="testLogout()">Test Logout</button>
+            <div id="logoutResult" class="result"></div>
+        </div>
+
+        <!-- Forgot Password Test -->
+        <div class="test-section">
+            <div class="test-title">6️⃣ Forgot Password (Send OTP)</div>
+            <input type="email" id="forgotEmail" placeholder="Email" value="farmer@test.com">
+            <button onclick="testForgotPassword()">Send OTP</button>
+            <div id="forgotResult" class="result"></div>
+        </div>
+
+        <!-- Verify OTP Test -->
+        <div class="test-section">
+            <div class="test-title">7️⃣ Verify OTP (Check Console for OTP)</div>
+            <input type="email" id="verifyEmail" placeholder="Email" value="farmer@test.com">
+            <input type="text" id="verifyOtp" placeholder="OTP (check browser console)">
+            <button onclick="testVerifyOtp()">Verify OTP</button>
+            <div id="verifyResult" class="result"></div>
+        </div>
+
+        <!-- Reset Password Test -->
+        <div class="test-section">
+            <div class="test-title">8️⃣ Reset Password (After OTP Verification)</div>
+            <input type="email" id="resetEmail" placeholder="Email" value="farmer@test.com">
+            <input type="text" id="resetOtp" placeholder="OTP" value="">
+            <input type="password" id="resetNewPassword" placeholder="New Password" value="newpassword123">
+            <input type="password" id="resetConfirm" placeholder="Confirm Password" value="newpassword123">
+            <button onclick="testResetPassword()">Reset Password</button>
+            <div id="resetResult" class="result"></div>
+        </div>
+
+        <!-- Token Display -->
+        <div class="test-section">
+            <div class="test-title">🔑 Current Token Status</div>
+            <button onclick="showToken()">Show Current Token</button>
+            <div id="tokenResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        const BACKEND_URL = 'http://localhost:5000';
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+
+                const token = localStorage.getItem('authToken');
+                if (token) {
+                    options.headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                const data = await response.json();
+                
+                return {
+                    status: response.status,
+                    ok: response.ok,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    ok: false,
+                    error: error.message
+                };
+            }
+        }
+
+        function displayResult(elementId, result, isSuccess = true) {
+            const elem = document.getElementById(elementId);
+            elem.className = 'result ' + (isSuccess ? 'success' : 'error');
+            elem.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        }
+
+        async function testHealth() {
+            const result = await apiCall('/auth/signup', 'GET');
+            try {
+                const health = await fetch(`${BACKEND_URL}/health`).then(r => r.json());
+                displayResult('healthResult', health, true);
+            } catch (error) {
+                displayResult('healthResult', { error: error.message }, false);
+            }
+        }
+
+        async function testSignup() {
+            const data = {
+                name: document.getElementById('signupName').value,
+                email: document.getElementById('signupEmail').value,
+                address: document.getElementById('signupAddress').value,
+                city: document.getElementById('signupCity').value,
+                contact: document.getElementById('signupContact').value,
+                password: document.getElementById('signupPassword').value,
+                confirmPassword: document.getElementById('signupConfirm').value
+            };
+
+            const result = await apiCall('/auth/signup', 'POST', data);
+            displayResult('signupResult', result.data, result.ok);
+            if (result.ok) {
+                document.getElementById('loginEmail').value = data.email;
+                document.getElementById('loginPassword').value = data.password;
+            }
+        }
+
+        async function testLogin() {
+            const data = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            const result = await apiCall('/auth/login', 'POST', data);
+            if (result.ok && result.data.token) {
+                localStorage.setItem('authToken', result.data.token);
+                localStorage.setItem('currentUser', JSON.stringify(result.data.user));
+            }
+            displayResult('loginResult', result.data, result.ok);
+        }
+
+        async function testProfile() {
+            const result = await apiCall('/auth/profile', 'GET');
+            displayResult('profileResult', result.data, result.ok);
+        }
+
+        async function testLogout() {
+            const result = await apiCall('/auth/logout', 'POST', {});
+            if (result.ok) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+            }
+            displayResult('logoutResult', result.data, result.ok);
+        }
+
+        async function testForgotPassword() {
+            const data = {
+                email: document.getElementById('forgotEmail').value
+            };
+
+            const result = await apiCall('/auth/forgot-password', 'POST', data);
+            displayResult('forgotResult', result.data, result.ok);
+            alert('⏱️ Check Browser Console (F12) for the OTP!');
+        }
+
+        async function testVerifyOtp() {
+            const data = {
+                email: document.getElementById('verifyEmail').value,
+                otp: document.getElementById('verifyOtp').value
+            };
+
+            const result = await apiCall('/auth/verify-otp', 'POST', data);
+            displayResult('verifyResult', result.data, result.ok);
+        }
+
+        async function testResetPassword() {
+            const data = {
+                email: document.getElementById('resetEmail').value,
+                otp: document.getElementById('resetOtp').value,
+                newPassword: document.getElementById('resetNewPassword').value,
+                confirmPassword: document.getElementById('resetConfirm').value
+            };
+
+            const result = await apiCall('/auth/reset-password', 'POST', data);
+            displayResult('resetResult', result.data, result.ok);
+        }
+
+        function showToken() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('currentUser');
+            const info = {
+                'Token Found': !!token,
+                'Token': token ? `${token.substring(0, 20)}...` : 'Not logged in',
+                'User': user ? JSON.parse(user) : 'Not logged in'
+            };
+            displayResult('tokenResult', info, !!token);
+        }
+
+        console.log('%c🌾 CropCare API Testing Console 🌾', 'color: #a4d65e; font-size: 16px; font-weight: bold;');
+        console.log('Backend URL: ' + BACKEND_URL);
+        console.log('API Base: ' + API_BASE_URL);
+    </script>
+</body>
+</html>

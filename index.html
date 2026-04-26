@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropCare - Detect Crop Diseases</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        nav {
+            background-color: #1a6b4a; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
+        }
+        .logo { display: flex; align-items: center; gap: 0.5rem; color: white; font-size: 1.5rem; font-weight: bold; text-decoration: none; }
+        .logo-icon { width: 35px; height: 35px; background-color: #a4d65e; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #1a6b4a; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; list-style: none; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s ease; padding: 0.5rem 0.75rem; border-radius: 4px; }
+        .nav-links a:hover { color: #a4d65e; background-color: rgba(164,214,94,0.1); }
+        .nav-links .active { color: #a4d65e; }
+        .auth-buttons { display: flex; gap: 1rem; align-items: center; }
+        .login-btn { background-color: transparent; color: white; border: 2px solid white; padding: 0.5rem 1.25rem; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .login-btn:hover { background-color: white; color: #1a6b4a; }
+        .profile-btn { background-color: #a4d65e; color: #1a6b4a; border: none; padding: 0.45rem 0.9rem; border-radius: 999px; cursor: pointer; font-size: 0.85rem; font-weight: 700; margin-top: 0.4rem; transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease; }
+        .profile-btn:hover { background-color: #92bb52; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(164,214,94,0.25); }
+        .cta-btn { background-color: #a4d65e; color: #1a6b4a; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .cta-btn:hover { background-color: #92bb52; transform: translateY(-2px); }
+
+        .language-selector { position: relative; }
+        .language-btn { background-color: transparent; color: white; border: 2px solid white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; }
+        .language-btn:hover { background-color: rgba(164,214,94,0.2); border-color: #a4d65e; color: #a4d65e; }
+        .language-dropdown { position: absolute; top: 100%; right: 0; background-color: #1a6b4a; border: 2px solid #a4d65e; border-radius: 4px; list-style: none; min-width: 150px; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: none; z-index: 1000; overflow: hidden; }
+        .language-dropdown.active { display: block; }
+        .language-dropdown li { margin: 0; }
+        .language-dropdown a { display: block; color: white; text-decoration: none; padding: 0.75rem 1.25rem; transition: all 0.3s ease; font-weight: 500; border: none; }
+        .language-dropdown a:hover { background-color: #a4d65e; color: #1a6b4a; }
+        .language-dropdown a.active { background-color: #a4d65e; color: #1a6b4a; }
+
+        .hero { background: linear-gradient(135deg, #1a6b4a 0%, #2a8f63 100%); color: white; padding: 5rem 2rem; min-height: calc(100vh - 70px); display: flex; align-items: center; }
+        .hero-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+        .hero-content h1 { font-size: 3.8rem; margin-bottom: 1.5rem; line-height: 1.3; letter-spacing: -1px; font-weight: 700; color: white; max-width: 600px; }
+        .hero-content { padding-top: 1.5rem; }
+        .hero-content .highlight { color: #a4d65e; font-weight: 700; }
+        .hero-content p { font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6; opacity: 0.95; }
+        .hero-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .btn-primary { background-color: #a4d65e; color: #1a6b4a; border: none; padding: 1rem 2rem; border-radius: 4px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary:hover { background-color: #92bb52; transform: translateY(-3px); }
+        .btn-secondary { background-color: transparent; color: white; border: 2px solid white; padding: 1rem 2rem; border-radius: 4px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-secondary:hover { background-color: white; color: #1a6b4a; }
+        .hero-image { display: flex; justify-content: flex-end; align-items: center; align-self: center; width: 100%; }
+        .image-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 700px; grid-auto-rows: 1fr; align-items: center; }
+        .image-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.2); transition: transform 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .image-gallery .image-card:nth-child(3) { grid-column: 2; grid-row: 2; }
+        .image-gallery .image-card:nth-child(4) { grid-column: 1; grid-row: 2; }
+        .image-card:hover { transform: translateY(-5px); }
+        .image-card img { width: 100%; height: 220px; min-height: 160px; object-fit: cover; }
+        .image-label { padding: 0.75rem 1rem; font-size: 0.95rem; color: #1a6b4a; font-weight: 600; text-align: center; background: #ffffff; }
+        .ai-badge { background-color: #a4d65e; color: #1a6b4a; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+
+        .farmer-needs { background-color: #f3f9ee; padding: 5rem 2rem; text-align: center; }
+        .farmer-needs h2 { font-size: 2.4rem; font-weight: 800; color: #1a3c28; margin-bottom: 0.6rem; }
+        .farmer-needs .section-sub { color: #5a7a65; font-size: 1rem; margin-bottom: 3.5rem; }
+        .farmer-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 320px)); justify-content: center; gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+        .farmer-card { background: #ffffff; border-radius: 14px; padding: 2.5rem 1.5rem 2rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); text-align: center; transition: transform 0.25s ease, box-shadow 0.25s ease; display: flex; flex-direction: column; align-items: center; min-height: 100%; }
+        .farmer-card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,0.11); }
+        .farmer-card .card-icon { font-size: 2.8rem; margin-bottom: 1rem; display: block; }
+        .farmer-card h3 { font-size: 1rem; font-weight: 700; color: #1a3c28; margin-bottom: 0.75rem; }
+        .farmer-card p { font-size: 0.88rem; color: #5a7a65; line-height: 1.65; margin-bottom: 1.25rem; max-width: 32ch; }
+        .farmer-card a { margin-top: auto; }
+        .farmer-card .card-link { font-size: 0.88rem; font-weight: 600; color: #1a6b4a; text-decoration: underline; cursor: pointer; transition: color 0.2s; }
+        .farmer-card .card-link:hover { color: #1a3c28; }
+
+        .stats-section { background-color: #f3f9ee; padding: 3rem 2rem 4.5rem; border-top: 1px solid rgba(0,80,40,0.1); }
+        .stats-grid { display: flex; justify-content: center; max-width: 1100px; margin: 0 auto; }
+        .stat-item { flex: 1; text-align: center; padding: 0 1.5rem; border-right: 1px solid rgba(0,80,40,0.12); }
+        .stat-item:last-child { border-right: none; }
+        .stat-value { display: block; font-size: 2.6rem; font-weight: 800; color: #1a3c28; line-height: 1; margin-bottom: 0.5rem; }
+        .stat-label { font-size: 0.9rem; color: #6a8a74; font-weight: 500; }
+
+        .site-footer { background-color: #132d1e; color: rgba(255,255,255,0.85); text-align: center; padding: 2.5rem 2rem 2rem; }
+        .site-footer .footer-logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+        .site-footer .footer-logo span { font-size: 1.25rem; font-weight: 700; color: #ffffff; }
+        .site-footer p { font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 1.2rem; max-width: 580px; margin-left: auto; margin-right: auto; }
+        .footer-nav { display: flex; justify-content: center; gap: 2rem; }
+        .footer-nav a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+        .footer-nav a:hover { color: #ffffff; }
+
+        @media (max-width: 900px) {
+            .farmer-cards { grid-template-columns: repeat(2, minmax(240px, 320px)); }
+            .stats-grid { flex-wrap: wrap; }
+            .stat-item { flex: 0 0 50%; border-right: none; padding: 1.2rem 1rem; }
+        }
+        @media (max-width: 768px) {
+            .hero-container { grid-template-columns: 1fr; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-buttons { flex-direction: column; }
+            .btn-primary, .btn-secondary { width: 100%; }
+            .image-gallery { grid-template-columns: 1fr; max-width: 100%; grid-auto-rows: auto; }
+        }
+        @media (max-width: 600px) {
+            nav { padding: 1rem; }
+            .nav-links { gap: 0.5rem; font-size: 0.9rem; }
+            .hero { padding: 3rem 1rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .farmer-needs h2 { font-size: 1.7rem; }
+            .farmer-cards { grid-template-columns: minmax(240px, 320px); }
+            .stat-item { flex: 0 0 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="#" class="logo">
+            <div class="logo-icon">AC</div>
+            <span>AgroCare</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#home" class="active" data-i18n="nav_home">Home</a></li>
+            <li><a href="about.html" data-i18n="nav_about">About Us</a></li>
+            <li><a href="yojana.html" data-i18n="nav_yojana">Yojana</a></li>
+            <li><a href="contactus.html" data-i18n="nav_contact">Contact Us</a></li>
+        </ul>
+        <div class="language-selector">
+            <button class="language-btn" id="languageBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                <span>🌐</span>
+                <span id="langDisplay">EN</span>
+            </button>
+            <ul class="language-dropdown" id="languageDropdown">
+                <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+                <li><a href="#" class="lang-option" data-lang="mr">मराठी (Marathi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="hi">हिंदी (Hindi)</a></li>
+                <li><a href="#" class="lang-option" data-lang="ta">தமிழ் (Tamil)</a></li>
+            </ul>
+        </div>
+        <div class="auth-buttons" id="authButtons">
+            <a href="login.html"><button class="login-btn" id="navLoginBtn" data-i18n="btn_login">Log In</button></a>
+            <a href="detect_details.html"><button class="cta-btn" id="navDetectorBtn" data-i18n="btn_detector">Try AI Detector</button></a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 data-i18n="hero_heading">Detect crop disease</h1>
+                <p id="mainDesc" data-i18n="hero_desc1">Crop Disease Detection helps farmers identify plant diseases at an early stage. Using image processing and machine learning, crop health is analyzed accurately. Early detection reduces crop loss and improves agricultural productivity. This system supports farmers in making timely and effective treatment decisions.</p>
+                <p id="secondaryDesc" data-i18n="hero_desc2">This system helps farmers find crop diseases quickly and easily. It uses images and machine learning to check plant health. Early detection protects crops from serious damage. Farmers can take the right action at the right time.</p>
+                <div class="hero-buttons">
+                    <a href="detect_details.html"><button class="btn-primary" data-i18n="btn_detector">Try AI Detector</button></a>
+                   <a href="how.html"><button class="btn-secondary" data-i18n="btn_learn">Learn how it works</button></a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-gallery">
+                    <div class="image-card">
+                        <img src="tom.webp" alt="Tomato disease detection" decoding="async" fetchpriority="high">
+                    </div>
+                    <div class="image-card">
+                        <img src="farm.avif" alt="Corn disease detection" loading="lazy" decoding="async">
+                    </div>
+                    <div class="image-card">
+                        <img src="crop.webp" alt="Cassava disease detection" loading="lazy" decoding="async">
+                    </div>
+                    <div class="image-card">
+                        <img src="jo.webp" alt="Wheat disease detection" loading="lazy" decoding="async">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Everything a Farmer Needs Section -->
+    <section class="farmer-needs">
+        <h2 data-i18n="section_heading">Everything a Farmer Needs</h2>
+        <p class="section-sub" data-i18n="section_sub">AI disease detection, soil analysis, weather forecasts and government schemes — all in one place</p>
+        <div class="farmer-cards">
+            <div class="farmer-card">
+                <span class="card-icon">🌿</span>
+                <h3 data-i18n="card1_title">AI Disease Detector</h3>
+                <p data-i18n="card1_desc">Upload a crop photo and get instant disease diagnosis with treatment advice from Claude AI.</p>
+                <a href="detect_details.html"><span class="card-link" data-i18n="card1_link">Click to Try →</span></a>
+            </div>
+            
+            <div class="farmer-card">
+                <span class="card-icon">⛈️</span>
+                <h3 data-i18n="card3_title">16-Day Weather</h3>
+                <p data-i18n="card3_desc">Hyperlocal farm weather forecasts with rain probability, UV index and daily advisories.</p>
+                <a href="detect_details.html"><span class="card-link" data-i18n="card3_link">Check Weather →</span></a>
+            </div>
+            <div class="farmer-card">
+                <span class="card-icon">🏛️</span>
+                <h3 data-i18n="card4_title">Government Yojanas</h3>
+                <p data-i18n="card4_desc">Explore PM-KISAN, PMFBY, KCC, PMKSY and 12+ government schemes for Indian farmers.</p>
+                <a href="yojana.html"><span class="card-link" data-i18n="card4_link">View Schemes →</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-value">12+</span>
+                <span class="stat-label" data-i18n="stat1">Govt Schemes</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">4</span>
+                <span class="stat-label" data-i18n="stat2">Languages</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">16</span>
+                <span class="stat-label" data-i18n="stat3">Day Forecast</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">92%</span>
+                <span class="stat-label" data-i18n="stat4">AI Accuracy</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-logo">
+            <span>🌾 AgroCare</span>
+        </div>
+        <p data-i18n="footer_desc">Empowering Indian farmers with AI-powered crop disease detection, soil analysis, weather and government schemes.</p>
+        <nav class="footer-nav">
+            <a href="about.html" data-i18n="nav_about">About</a>
+            <a href="#" data-i18n="footer_weather">Weather</a>
+            <a href="yojana.html" data-i18n="nav_yojana">Yojana</a>
+            <a href="contactus.html" data-i18n="nav_contact">Contact</a>
+        </nav>
+    </footer>
+
+    <script>
+    // ─────────────────────────────────────────────
+    // TRANSLATIONS  (pure JS, no API)
+    // ─────────────────────────────────────────────
+    const translations = {
+        en: {
+            nav_home:       'Home',
+            nav_about:      'About Us',
+            nav_yojana:     'Yojana',
+            nav_contact:    'Contact Us',
+            btn_login:      'Log In',
+            btn_detector:   'Try AI Detector',
+            btn_learn:      'Learn how it works',
+
+            hero_heading:   'Detect crop disease',
+            hero_desc1:     'Crop Disease Detection helps farmers identify plant diseases at an early stage. Using image processing and machine learning, crop health is analyzed accurately. Early detection reduces crop loss and improves agricultural productivity. This system supports farmers in making timely and effective treatment decisions.',
+            hero_desc2:     'This system helps farmers find crop diseases quickly and easily. It uses images and machine learning to check plant health. Early detection protects crops from serious damage. Farmers can take the right action at the right time.',
+
+            section_heading:'Everything a Farmer Needs',
+            section_sub:    'AI disease detection, soil analysis, weather forecasts and government schemes — all in one place',
+
+            card1_title:    'AI Disease Detector',
+            card1_desc:     'Upload a crop photo and get instant disease diagnosis with treatment advice from Claude AI.',
+            card1_link:     'Click to Try →',
+            card2_title:    'Soil Health Analyzer',
+            card2_desc:     'Enter pH, moisture, NPK values and get AI recommendations for your soil and crop.',
+            card2_link:     'Analyze Soil →',
+            card3_title:    '16-Day Weather',
+            card3_desc:     'Hyperlocal farm weather forecasts with rain probability, UV index and daily advisories.',
+            card3_link:     'Check Weather →',
+            card4_title:    'Government Yojanas',
+            card4_desc:     'Explore PM-KISAN, PMFBY, KCC, PMKSY and 12+ government schemes for Indian farmers.',
+            card4_link:     'View Schemes →',
+
+            stat1:          'Govt Schemes',
+            stat2:          'Languages',
+            stat3:          'Day Forecast',
+            stat4:          'AI Accuracy',
+
+            footer_desc:    'Empowering Indian farmers with AI-powered crop disease detection, soil analysis, weather and government schemes.',
+            footer_weather: 'Weather',
+
+            langCode:       'EN'
+        },
+
+        mr: {
+            nav_home:       'होम',
+            nav_about:      'आमच्याबद्दल',
+            nav_yojana:     'योजना',
+            nav_contact:    'आमच्याशी संपर्क करा',
+            btn_login:      'लॉगिन करा',
+            btn_detector:   'AI डिटेक्टर वापरून पहा',
+            btn_learn:      'हे कसे कार्य करते हे जाणून घ्या',
+
+            hero_heading:   'पीक रोग शोधा',
+            hero_desc1:     'पीक रोग शोधणे शेतकऱ्यांना प्रारंभिक टप्प्यात वनस्पती रोग ओळखण्यास मदत करते. प्रतिमा प्रक्रिया आणि मशीन लर्निंग वापरून, पीक आरोग्य अचूकपणे विश्लेषित केले जाते. प्रारंभिक शोध पीक नुकसान कमी करतो आणि कृषी उत्पादकता सुधारतो. ही प्रणाली शेतकऱ्यांना वेळेवर आणि प्रभावी उपचार निर्णय घेण्यास समर्थन करते.',
+            hero_desc2:     'ही प्रणाली शेतकऱ्यांना पीक रोग द्रुतपणे आणि सहजपणे शोधण्यास मदत करते. हे प्रतिमा आणि मशीन लर्निंग वापरून वनस्पती आरोग्य तपासते. प्रारंभिक शोध पीकांना गंभीर नुकसानापासून संरक्षित करते. शेतकरी योग्य वेळी योग्य कृती करू शकतात.',
+
+            section_heading:'शेतकऱ्याला हवे ते सर्व',
+            section_sub:    'AI रोग शोधणे, माती विश्लेषण, हवामान अंदाज आणि सरकारी योजना — सर्व एकाच ठिकाणी',
+
+            card1_title:    'AI रोग शोधक',
+            card1_desc:     'पीकाचा फोटो अपलोड करा आणि Claude AI कडून तत्काळ रोग निदान आणि उपचार सल्ला मिळवा.',
+            card1_link:     'वापरून पहा →',
+            card2_title:    'माती आरोग्य विश्लेषक',
+            card2_desc:     'pH, आर्द्रता, NPK मूल्ये प्रविष्ट करा आणि तुमच्या माती व पिकासाठी AI शिफारसी मिळवा.',
+            card2_link:     'माती विश्लेषण करा →',
+            card3_title:    '१६-दिवसीय हवामान',
+            card3_desc:     'पाऊस शक्यता, UV निर्देशांक आणि दैनंदिन सल्ल्यासह हायपरलोकल शेती हवामान अंदाज.',
+            card3_link:     'हवामान तपासा →',
+            card4_title:    'सरकारी योजना',
+            card4_desc:     'भारतीय शेतकऱ्यांसाठी PM-KISAN, PMFBY, KCC, PMKSY आणि १२+ सरकारी योजना एक्सप्लोर करा.',
+            card4_link:     'योजना पहा →',
+
+            stat1:          'सरकारी योजना',
+            stat2:          'भाषा',
+            stat3:          'दिवस अंदाज',
+            stat4:          'AI अचूकता',
+
+            footer_desc:    'AI-शक्तीवर चालणाऱ्या पीक रोग शोधणे, माती विश्लेषण, हवामान आणि सरकारी योजनांसह भारतीय शेतकऱ्यांना सक्षम करणे.',
+            footer_weather: 'हवामान',
+
+            langCode:       'मराठी'
+        },
+
+        hi: {
+            nav_home:       'होम',
+            nav_about:      'हमारे बारे में',
+            nav_yojana:     'योजना',
+            nav_contact:    'हमसे संपर्क करें',
+            btn_login:      'लॉगिन करें',
+            btn_detector:   'AI डिटेक्टर आज़माएं',
+            btn_learn:      'यह कैसे काम करता है जानें',
+
+            hero_heading:   'फसल रोग का पता लगाएं',
+            hero_desc1:     'फसल रोग पहचान किसानों को शुरुआती चरण में पौधों के रोगों की पहचान करने में मदद करता है। छवि प्रसंस्करण और मशीन लर्निंग का उपयोग करके, फसल स्वास्थ्य का सटीक विश्लेषण किया जाता है। प्रारंभिक पहचान फसल हानि को कम करती है और कृषि उत्पादकता में सुधार करती है। यह प्रणाली किसानों को समय पर और प्रभावी उपचार निर्णय लेने में सहायता करती है।',
+            hero_desc2:     'यह प्रणाली किसानों को फसल के रोगों का पता लगाने में मदद करती है। यह छवियों और मशीन लर्निंग का उपयोग करके पौधों के स्वास्थ्य की जांच करता है। प्रारंभिक पहचान फसलों को गंभीर नुकसान से बचाती है। किसान सही समय पर सही कार्रवाई कर सकते हैं।',
+
+            section_heading:'किसान की हर ज़रूरत',
+            section_sub:    'AI रोग पहचान, मिट्टी विश्लेषण, मौसम पूर्वानुमान और सरकारी योजनाएं — सब एक जगह',
+
+            card1_title:    'AI रोग पहचानकर्ता',
+            card1_desc:     'फसल की फोटो अपलोड करें और Claude AI से तुरंत रोग निदान और उपचार की सलाह पाएं।',
+            card1_link:     'आज़माएं →',
+            card2_title:    'मिट्टी स्वास्थ्य विश्लेषक',
+            card2_desc:     'pH, नमी, NPK मान दर्ज करें और अपनी मिट्टी और फसल के लिए AI सिफारिशें पाएं।',
+            card2_link:     'मिट्टी विश्लेषण करें →',
+            card3_title:    '16-दिन का मौसम',
+            card3_desc:     'बारिश की संभावना, UV सूचकांक और दैनिक सलाह के साथ हाइपरलोकल खेत मौसम पूर्वानुमान।',
+            card3_link:     'मौसम जांचें →',
+            card4_title:    'सरकारी योजनाएं',
+            card4_desc:     'भारतीय किसानों के लिए PM-KISAN, PMFBY, KCC, PMKSY और 12+ सरकारी योजनाएं देखें।',
+            card4_link:     'योजनाएं देखें →',
+
+            stat1:          'सरकारी योजनाएं',
+            stat2:          'भाषाएं',
+            stat3:          'दिन पूर्वानुमान',
+            stat4:          'AI सटीकता',
+
+            footer_desc:    'AI-संचालित फसल रोग पहचान, मिट्टी विश्लेषण, मौसम और सरकारी योजनाओं के साथ भारतीय किसानों को सशक्त बनाना।',
+            footer_weather: 'मौसम',
+
+            langCode:       'हिंदी'
+        },
+
+        ta: {
+            nav_home:       'முகப்பு',
+            nav_about:      'எங்களைப் பற்றி',
+            nav_yojana:     'திட்டம்',
+            nav_contact:    'தொடர்பு கொள்ளுங்கள்',
+            btn_login:      'உள்நுழையவும்',
+            btn_detector:   'AI கண்டறிதல் முயற்சிக்கவும்',
+            btn_learn:      'இது எவ்வாறு செயல்படுகிறது',
+
+            hero_heading:   'பயிர் நோய்களைக் கண்டறியுங்கள்',
+            hero_desc1:     'பயிர் நோய் கண்டறிதல் விவசாயிகளுக்கு ஆரம்ப கட்டத்தில் தாவர நோய்களை அடையாளம் காண உதவுகிறது. பட செயலாக்கம் மற்றும் இயந்திர கற்றல் பயன்படுத்தி, பயிர் ஆரோக்கியம் துல்லியமாக பகுப்பாய்வு செய்யப்படுகிறது. ஆரம்ப கண்டறிதல் பயிர் இழப்பை குறைக்கிறது மற்றும் வேளாண் உற்பத்தியை மேம்படுத்துகிறது.',
+            hero_desc2:     'இந்த அமைப்பு விவசாயிகளை பயிர் நோய்களை விரைவாக மற்றும் எளிதாக கண்டறிய உதவுகிறது. இது படங்கள் மற்றும் இயந்திர கற்றல் பயன்படுத்தி தாவர ஆரோக்கியத்தை சரிபார்க்கிறது. ஆரம்ப கண்டறிதல் பயிர்களை கடுமையான சேதத்திலிருந்து பாதுகாக்கிறது.',
+
+            section_heading:'விவசாயிக்கு தேவையான அனைத்தும்',
+            section_sub:    'AI நோய் கண்டறிதல், மண் பகுப்பாய்வு, வானிலை முன்னறிவிப்பு மற்றும் அரசு திட்டங்கள் — அனைத்தும் ஒரே இடத்தில்',
+
+            card1_title:    'AI நோய் கண்டறிவி',
+            card1_desc:     'பயிர் புகைப்படத்தை பதிவேற்றி Claude AI இலிருந்து உடனடி நோய் கண்டறிதல் மற்றும் சிகிச்சை ஆலோசனை பெறுங்கள்.',
+            card1_link:     'முயற்சிக்கவும் →',
+            card2_title:    'மண் ஆரோக்கிய பகுப்பாய்வி',
+            card2_desc:     'pH, ஈரப்பதம், NPK மதிப்புகளை உள்ளிட்டு உங்கள் மண் மற்றும் பயிருக்கான AI பரிந்துரைகளை பெறுங்கள்.',
+            card2_link:     'மண் பகுப்பாய்வு →',
+            card3_title:    '16-நாள் வானிலை',
+            card3_desc:     'மழை நிகழ்தகவு, UV குறியீடு மற்றும் தினசரி ஆலோசனைகளுடன் ஹைப்பர்லோக்கல் பண்ணை வானிலை முன்னறிவிப்பு.',
+            card3_link:     'வானிலை பார்க்கவும் →',
+            card4_title:    'அரசு திட்டங்கள்',
+            card4_desc:     'இந்திய விவசாயிகளுக்கான PM-KISAN, PMFBY, KCC, PMKSY மற்றும் 12+ அரசு திட்டங்களை ஆராயுங்கள்.',
+            card4_link:     'திட்டங்களை பார்க்கவும் →',
+
+            stat1:          'அரசு திட்டங்கள்',
+            stat2:          'மொழிகள்',
+            stat3:          'நாள் முன்னறிவிப்பு',
+            stat4:          'AI துல்லியம்',
+
+            footer_desc:    'AI-இயக்கப்படும் பயிர் நோய் கண்டறிதல், மண் பகுப்பாய்வு, வானிலை மற்றும் அரசு திட்டங்களுடன் இந்திய விவசாயிகளை மேம்படுத்துதல்.',
+            footer_weather: 'வானிலை',
+
+            langCode:       'தமிழ்'
+        }
+    };
+
+    // ─────────────────────────────────────────────
+    // CORE TRANSLATION ENGINE
+    // ─────────────────────────────────────────────
+    function applyTranslations(lang) {
+        const t = translations[lang] || translations['en'];
+
+        // Update every element that has data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key] !== undefined) {
+                el.textContent = t[key];
+            }
+        });
+
+        // Update language display badge
+        document.getElementById('langDisplay').textContent = t.langCode;
+
+        // Update active state in dropdown
+        document.querySelectorAll('.lang-option').forEach(o => {
+            o.classList.toggle('active', o.getAttribute('data-lang') === lang);
+        });
+
+        // Persist choice
+        localStorage.setItem('selectedLanguage', lang);
+    }
+
+    // ─────────────────────────────────────────────
+    // DROPDOWN TOGGLE
+    // ─────────────────────────────────────────────
+    const languageBtn      = document.getElementById('languageBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+
+    function toggleDropdown(forceState) {
+        const open = typeof forceState === 'boolean'
+            ? forceState
+            : !languageDropdown.classList.contains('active');
+        languageDropdown.classList.toggle('active', open);
+        languageBtn.setAttribute('aria-expanded', open);
+    }
+
+    languageBtn.addEventListener('click', e => { e.stopPropagation(); toggleDropdown(); });
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.language-selector')) toggleDropdown(false);
+    });
+
+    document.querySelectorAll('.lang-option').forEach(option => {
+        option.addEventListener('click', e => {
+            e.preventDefault();
+            applyTranslations(option.getAttribute('data-lang'));
+            toggleDropdown(false);
+        });
+    });
+
+    // ─────────────────────────────────────────────
+    // AUTH UI (login / profile)
+    // ─────────────────────────────────────────────
+    function isLoggedIn()    { return localStorage.getItem('authToken') !== null; }
+    function getCurrentUser(){ const u = localStorage.getItem('currentUser'); return u ? JSON.parse(u) : null; }
+    function logout()        { localStorage.removeItem('authToken'); localStorage.removeItem('currentUser'); window.location.href = 'login.html'; }
+
+    async function getUserProfile() {
+        const token = localStorage.getItem('authToken');
+        if (!token) throw new Error('You are not logged in.');
+        const response = await fetch('http://localhost:5000/api/auth/profile', { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await response.json().catch(() => ({ message: 'Invalid response from server' }));
+        if (!response.ok) throw new Error(data.message || 'Failed to load profile');
+        return data;
+    }
+
+    function updateAuthUI() {
+        const authButtonsDiv = document.getElementById('authButtons');
+        const lang = localStorage.getItem('selectedLanguage') || 'en';
+        const t    = translations[lang] || translations['en'];
+
+        if (isLoggedIn()) {
+            const currentUser = getCurrentUser();
+            const userName    = currentUser ? currentUser.name : 'User';
+            authButtonsDiv.innerHTML = `
+                <div style="display:flex;align-items:center;gap:1rem;">
+                    <div style="color:white;text-align:right;font-size:0.9rem;">
+                        <div style="font-weight:600;">Welcome, ${userName}! 👋</div>
+                        <button id="viewProfileBtn" class="profile-btn" type="button">View Profile</button>
+                    </div>
+                    <button id="logoutBtn" class="login-btn" type="button" style="background-color:#ef4444;border-color:#ef4444;">Logout</button>
+                </div>
+                <a href="detect_details.html"><button class="cta-btn" id="navDetectorBtn" type="button">${t.btn_detector}</button></a>
+            `;
+            document.getElementById('logoutBtn').addEventListener('click', () => { if (confirm('Are you sure you want to logout?')) logout(); });
+            document.getElementById('viewProfileBtn').addEventListener('click', showProfile);
+        } else {
+            authButtonsDiv.innerHTML = `
+                <a href="login.html"><button class="login-btn" id="navLoginBtn" type="button">${t.btn_login}</button></a>
+                <a href="detect_details.html"><button class="cta-btn" id="navDetectorBtn" type="button">${t.btn_detector}</button></a>
+            `;
+        }
+    }
+
+    async function showProfile() {
+        try {
+            const profileData = await getUserProfile();
+            const user = profileData.user;
+            document.body.insertAdjacentHTML('beforeend', `
+                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;" id="profileModal" onclick="if(event.target.id==='profileModal') document.getElementById('profileModal').remove();">
+                    <div style="background:white;border-radius:12px;padding:2rem;max-width:500px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+                        <div style="text-align:center;margin-bottom:2rem;">
+                            <div style="width:80px;height:80px;background:#1a6b4a;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2.5rem;color:white;">👥</div>
+                            <h2 style="margin:0;color:#1a6b4a;font-size:1.5rem;">${user.name}</h2>
+                        </div>
+                        <div style="background:#f3f9ee;padding:1.5rem;border-radius:8px;margin-bottom:1.5rem;">
+                            <div style="margin-bottom:1rem;"><label style="color:#666;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Email</label><p style="margin:0;color:#1a6b4a;font-weight:600;">${user.email}</p></div>
+                            <div style="margin-bottom:1rem;"><label style="color:#666;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Contact</label><p style="margin:0;color:#1a6b4a;font-weight:600;">${user.contact}</p></div>
+                            <div style="margin-bottom:1rem;"><label style="color:#666;font-size:0.85rem;display:block;margin-bottom:0.3rem;">City</label><p style="margin:0;color:#1a6b4a;font-weight:600;">${user.city}</p></div>
+                            <div><label style="color:#666;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Address</label><p style="margin:0;color:#1a6b4a;font-weight:600;">${user.address}</p></div>
+                        </div>
+                        <button onclick="document.getElementById('profileModal').remove()" style="width:100%;background:#1a6b4a;color:white;border:none;padding:0.8rem;border-radius:8px;cursor:pointer;font-weight:600;font-size:1rem;">Close Profile</button>
+                    </div>
+                </div>
+            `);
+        } catch (error) {
+            alert('❌ Failed to load profile: ' + error.message);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // INIT ON PAGE LOAD
+    // ─────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        applyTranslations(savedLang);
+        updateAuthUI();
+    });
+
+    window.addEventListener('storage', updateAuthUI);
+    </script>
+</body>
+</html>

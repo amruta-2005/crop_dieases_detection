@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroCare Navigation Bar</title>
+<style>
+  /* Navigation Bar Styles */
+  body { margin:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4faf6;}
+  nav {
+    background-color: #1a6b4a;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: #a4d65e;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a6b4a;
+    font-weight: 800;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    list-style: none;
+    padding-left:0;
+  }
+
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+  }
+
+  .nav-links a:hover {
+    color: #1a6b4a;
+    background: rgba(164, 214, 94, 0.12);
+  }
+
+  .nav-links .active {
+    color: #a4d65e;
+  }
+
+  .auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .login-btn {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 0.45rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .cta-btn {
+    background: #a4d65e;
+    color: #114b35;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  /* Language Dropdown */
+  .language-selector { position: relative; }
+  .language-btn {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.3s ease;
+  }
+  .language-btn:hover {
+    background: rgba(164, 214, 94, 0.2);
+    border-color: #a4d65e;
+    color: #a4d65e;
+  }
+
+  .language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #1a6b4a;
+    border: 2px solid #a4d65e;
+    border-radius: 6px;
+    list-style: none;
+    min-width: 140px;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 1000;
+    padding-left:0;
+  }
+  .language-dropdown.active { display: block; }
+  .language-dropdown li { margin: 0; }
+  .language-dropdown a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+  }
+  .language-dropdown a:hover, .language-dropdown a.active {
+    background: #a4d65e;
+    color: #1a6b4a;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <!-- Logo -->
+  <a href="index.html" class="logo">
+    <div class="logo-icon">AC</div>
+    <span data-key="brand_name">AgroCare</span>
+  </a>
+
+  <!-- Navigation Links -->
+  <ul class="nav-links">
+    <li><a href="index.html" data-key="nav_home">Home</a></li>
+    <li><a href="about.html" data-key="nav_about">About Us</a></li>
+    <li><a href="yojana.html" class="active" data-key="nav_yojana">Yojana</a></li>
+    <li><a href="contactus.html" data-key="nav_contact">Contact Us</a></li>
+  </ul>
+
+  <!-- Language Selector -->
+  <div class="language-selector">
+    <button class="language-btn" id="languageBtn">🌐 <span id="langDisplay">EN</span></button>
+    <ul class="language-dropdown" id="languageDropdown">
+      <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+      <li><a href="#" class="lang-option" data-lang="mr">मराठी</a></li>
+      <li><a href="#" class="lang-option" data-lang="hi">हिंदी</a></li>
+      <li><a href="#" class="lang-option" data-lang="ta">தமிழ்</a></li>
+    </ul>
+  </div>
+
+  <!-- Auth Buttons -->
+  <div class="auth-buttons">
+    <a href="login.html"><button class="login-btn" data-key="btn_login">Log In</button></a>
+    <a href="detect.html"><button class="cta-btn" data-key="btn_ai">Try AI Detector</button></a>
+  </div>
+</nav>
+
+<script>
+  window.pageTranslations = {
+    en: {
+      brand_name: 'AgroCare',
+      nav_home: 'Home',
+      nav_about: 'About Us',
+      nav_yojana: 'Yojana',
+      nav_contact: 'Contact Us',
+      btn_login: 'Log In',
+      btn_ai: 'Try AI Detector'
+    },
+    hi: {
+      brand_name: 'AgroCare',
+      nav_home: 'होम',
+      nav_about: 'हमारे बारे में',
+      nav_yojana: 'योजना',
+      nav_contact: 'संपर्क करें',
+      btn_login: 'लॉग इन',
+      btn_ai: 'AI डिटेक्टर आजमाएं'
+    },
+    mr: {
+      brand_name: 'AgroCare',
+      nav_home: 'मुख्यपृष्ठ',
+      nav_about: 'आमच्याबद्दल',
+      nav_yojana: 'योजना',
+      nav_contact: 'संपर्क करा',
+      btn_login: 'लॉग इन',
+      btn_ai: 'AI डिटेक्टर वापरा'
+    },
+    ta: {
+      brand_name: 'AgroCare',
+      nav_home: 'முகப்பு',
+      nav_about: 'எங்களை பற்றி',
+      nav_yojana: 'திட்டம்',
+      nav_contact: 'தொடர்பு கொள்ள',
+      btn_login: 'உள்நுழை',
+      btn_ai: 'AI கண்டறிவதை முயற்சிக்கவும்'
+    }
+  };
+
+  // Language dropdown toggle
+  const languageBtn = document.getElementById('languageBtn');
+  const languageDropdown = document.getElementById('languageDropdown');
+
+  languageBtn.addEventListener('click', () => {
+    languageDropdown.classList.toggle('active');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.language-selector')) {
+      languageDropdown.classList.remove('active');
+    }
+  });
+
+  // Handle language selection
+  document.querySelectorAll('.lang-option').forEach(option => {
+    option.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+      option.classList.add('active');
+      document.getElementById('langDisplay').textContent = option.textContent;
+      languageDropdown.classList.remove('active');
+    });
+  });
+</script>
+
+<script src="google-translate-init.js"></script>
+</body>
+</html>

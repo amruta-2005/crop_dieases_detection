@@ -1,0 +1,17 @@
+(node:24420) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Could not delete temp file
+Server error: Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:421:11)
+    at spawn (node:child_process:796:9)
+    at execFile (node:child_process:349:17)
+    at H:\2-sem pict\PBL\pro\backend\server.js:155:5
+    at new Promise (<anonymous>)
+    at runPythonJson (H:\2-sem pict\PBL\pro\backend\server.js:154:10)
+    at runCombinedAnalysis (H:\2-sem pict\PBL\pro\backend\server.js:174:34)
+    at H:\2-sem pict\PBL\pro\backend\server.js:276:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}

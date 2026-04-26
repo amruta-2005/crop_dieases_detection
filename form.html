@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Form - CropCare</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f7f9f7; }
+
+        /* Page layout: background image with form overlay */
+        html, body { height: 100%; }
+        body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+        main { 
+            flex: 1; 
+            background: linear-gradient(135deg, rgba(26, 107, 74, 0.75), rgba(15, 107, 70, 0.85)), url('farm.avif') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .cards { 
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-card {
+            display: none;
+        }
+
+        .image-card img {
+            display: none;
+        }
+
+        /* Form header bar */
+        .form-header {
+            background: #0d5c46;
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Language selector */
+        .language-selector {
+            position: relative;
+        }
+
+        .language-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .language-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: #a4d65e;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #0d5c46;
+            border: 2px solid #a4d65e;
+            border-radius: 6px;
+            list-style: none;
+            min-width: 160px;
+            margin-top: 0.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-dropdown li {
+            margin: 0;
+        }
+
+        .language-dropdown a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .language-dropdown a:hover {
+            background-color: #a4d65e;
+            color: #0d5c46;
+        }
+
+        .language-dropdown a.active {
+            background-color: #a4d65e;
+            color: #0d5c46;
+        }
+
+        /* Form card */
+        .form-card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            max-height: 78vh;
+            overflow-y: auto;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .form-card h2 { 
+            display: none;
+        }
+
+        .form-group { margin-bottom:1rem; }
+        label { 
+            display:block; 
+            margin-bottom:0.5rem; 
+            color:#0d5c46; 
+            font-weight:700; 
+            font-size:0.95rem; 
+        }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="password"] { 
+            width:100%; 
+            padding:0.8rem 1rem; 
+            border:2px solid #e6e6e6; 
+            border-radius:6px; 
+            font-size:0.95rem; 
+            font-family: inherit; 
+            background:#fbfdfb; 
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="password"]:focus { 
+            outline:none; 
+            border-color:#0d5c46; 
+            box-shadow:0 0 0 3px rgba(13, 92, 70, 0.1); 
+            background:#fff; 
+        }
+        .btn-submit { 
+            background:#0d5c46; 
+            color:white; 
+            border:none; 
+            padding:0.8rem 2rem; 
+            border-radius:6px; 
+            cursor:pointer; 
+            font-weight:700; 
+            font-size:1rem; 
+            transition:all 0.3s ease;
+            margin-top:1.5rem;
+            align-self: flex-start;
+        }
+        .btn-submit:hover { 
+            background:#0a4938;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(13, 92, 70, 0.2);
+        }
+
+        @media (max-width:768px) {
+            main { padding: 1rem; }
+            .cards { max-width: 100%; }
+            .form-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="cards">
+            <div class="image-card">
+                <img src="backform.jpg" alt="Farm image">
+            </div>
+
+            <div class="form-header">
+                <div class="form-title">Application Form</div>
+                <div class="language-selector">
+                    <button class="language-btn" id="languageBtn">
+                        <span>🌐</span>
+                        <span id="langDisplay">EN</span>
+                    </button>
+                    <ul class="language-dropdown" id="languageDropdown">
+                        <li><a href="#" class="lang-option active" data-lang="en">English</a></li>
+                        <li><a href="#" class="lang-option" data-lang="mr">मराठी (Marathi)</a></li>
+                        <li><a href="#" class="lang-option" data-lang="hi">हिंदी (Hindi)</a></li>
+                        <li><a href="#" class="lang-option" data-lang="ta">தமிழ் (Tamil)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <form id="signupForm">
+                    <!-- Status message display -->
+                    <div id="formStatus" style="display: none; margin-bottom: 1.5rem; padding: 1rem; border-radius: 6px; font-weight: 600;"></div>
+
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <input type="text" id="address" name="address" placeholder="Enter your address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" name="city" placeholder="Enter your city" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact">Contact No *</label>
+                        <input type="tel" id="contact" name="contact" placeholder="Enter your contact number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password (min 6 characters)" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">Create Account</button>
+
+                    <div style="margin-top: 1.5rem; text-align: center;">
+                        <p style="color: #666; font-size: 0.9rem;">
+                            Already have an account? 
+                            <a href="login.html" style="color: #0d5c46; font-weight: 600; text-decoration: none;">Login here</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- API Client Functions (signup, login, showMessage, etc) -->
+    <script src="api-client.js"></script>
+
+    <script>
+        // Translations for all form fields
+        const translations = {
+            en: {
+                title: "Create Account",
+                name: "Full Name *",
+                fullname_placeholder: "Enter your full name",
+                address: "Address *",
+                address_placeholder: "Enter your address",
+                city: "City *",
+                city_placeholder: "Enter your city",
+                contact: "Contact No *",
+                contact_placeholder: "Enter your contact number",
+                username: "Username *",
+                username_placeholder: "Enter your username",
+                password: "Password *",
+                password_placeholder: "Enter your password",
+                submit: "Submit"
+            },
+            mr: {
+                title: "अर्ज फॉर्म",
+                fullname: "पूर्ण नाव *",
+                fullname_placeholder: "आपले पूर्ण नाव प्रविष्ट करा",
+                address: "पत्ता *",
+                address_placeholder: "आपला पत्ता प्रविष्ट करा",
+                city: "शहर *",
+                city_placeholder: "आपले शहर प्रविष्ट करा",
+                contact: "संपर्क क्रमांक *",
+                contact_placeholder: "आपला संपर्क क्रमांक प्रविष्ट करा",
+                username: "वापरकर्ता नाव *",
+                username_placeholder: "आपले वापरकर्ता नाव प्रविष्ट करा",
+                password: "पासवर्ड *",
+                password_placeholder: "आपला पासवर्ड प्रविष्ट करा",
+                submit: "सबमिट करा"
+            },
+            hi: {
+                title: "आवेदन पत्र",
+                fullname: "पूरा नाम *",
+                fullname_placeholder: "अपना पूरा नाम दर्ज करें",
+                address: "पता *",
+                address_placeholder: "अपना पता दर्ज करें",
+                city: "शहर *",
+                city_placeholder: "अपना शहर दर्ज करें",
+                contact: "संपर्क नंबर *",
+                contact_placeholder: "अपना संपर्क नंबर दर्ज करें",
+                username: "उपयोगकर्ता नाम *",
+                username_placeholder: "अपना उपयोगकर्ता नाम दर्ज करें",
+                password: "पासवर्ड *",
+                password_placeholder: "अपना पासवर्ड दर्ज करें",
+                submit: "जमा करें"
+            },
+            ta: {
+                title: "விண்ணப்ப படிவம்",
+                fullname: "முழு பெயர் *",
+                fullname_placeholder: "உங்கள் முழு பெயரை உள்ளிடவும்",
+                address: "முகவரி *",
+                address_placeholder: "உங்கள் முகவரியை உள்ளிடவும்",
+                city: "நகரம் *",
+                city_placeholder: "உங்கள் நகரத்தை உள்ளிடவும்",
+                contact: "தொடர்பு எண் *",
+                contact_placeholder: "உங்கள் தொடर்பு எண்ணை உள்ளிடவும்",
+                username: "பயனர் பெயர் *",
+                username_placeholder: "உங்கள் பயனர் பெயரை உள்ளிடவும்",
+                password: "கடவுச்சொல் *",
+                password_placeholder: "உங்கள் கடவுச்சொல்லை உள்ளிடவும்",
+                submit: "சமர்ப்பிக்கவும்"
+            }
+        };
+
+        let currentLang = 'en';
+
+        // Change language function
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const trans = translations[lang];
+
+            // Update title
+            document.querySelector('.form-title').textContent = trans.title;
+            document.getElementById('langDisplay').textContent = lang.toUpperCase();
+
+            // Update form labels and placeholders
+            document.querySelector('label[for="fullname"]').textContent = trans.fullname;
+            document.getElementById('fullname').placeholder = trans.fullname_placeholder;
+
+            document.querySelector('label[for="address"]').textContent = trans.address;
+            document.getElementById('address').placeholder = trans.address_placeholder;
+
+            document.querySelector('label[for="city"]').textContent = trans.city;
+            document.getElementById('city').placeholder = trans.city_placeholder;
+
+            document.querySelector('label[for="contact"]').textContent = trans.contact;
+            document.getElementById('contact').placeholder = trans.contact_placeholder;
+
+            document.querySelector('label[for="username"]').textContent = trans.username;
+            document.getElementById('username').placeholder = trans.username_placeholder;
+
+            document.querySelector('label[for="password"]').textContent = trans.password;
+            document.getElementById('password').placeholder = trans.password_placeholder;
+
+            document.querySelector('.btn-submit').textContent = trans.submit;
+
+            // Update active language button
+            document.querySelectorAll('.lang-option').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+        }
+
+        // Language dropdown toggle
+        document.getElementById('languageBtn').addEventListener('click', function(e){
+            e.preventDefault();
+            document.getElementById('languageDropdown').classList.toggle('active');
+        });
+
+        // Language option click
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const lang = this.getAttribute('data-lang');
+                changeLanguage(lang);
+                document.getElementById('languageDropdown').classList.remove('active');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e){ 
+            if(!e.target.closest('.language-selector')){ 
+                document.getElementById('languageDropdown').classList.remove('active'); 
+            } 
+        });
+
+        // ============================================
+        // SIGNUP FORM HANDLER
+        // ============================================
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('📋 Signup form submitted');
+
+            const statusDiv = document.getElementById('formStatus');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            console.log('📝 Form data:', { name, email, contact });
+
+            // Validate
+            if (!name || !address || !city || !contact || !email || !password || !confirmPassword) {
+                const msg = '❌ All fields are required';
+                showMessage(msg, 'error');
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = msg;
+                console.warn('❌ Validation failed: Missing fields');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                const msg = '❌ Please enter a valid email';
+                showMessage(msg, 'error');
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = msg;
+                console.warn('❌ Validation failed: Invalid email');
+                return;
+            }
+
+            if (contact.length !== 10 || !/^\d{10}$/.test(contact)) {
+                const msg = '❌ Contact number must be exactly 10 digits';
+                showMessage(msg, 'error');
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = msg;
+                console.warn('❌ Validation failed: Invalid contact');
+                return;
+            }
+
+            if (password.length < 6) {
+                const msg = '❌ Password must be at least 6 characters';
+                showMessage(msg, 'error');
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = msg;
+                console.warn('❌ Validation failed: Password too short');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                const msg = '❌ Passwords do not match';
+                showMessage(msg, 'error');
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = msg;
+                console.warn('❌ Validation failed: Passwords do not match');
+                return;
+            }
+
+            try {
+                // Show loading state
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#d1ecf1';
+                statusDiv.style.color = '#0c5460';
+                statusDiv.textContent = '⏳ Creating Account... Please wait...';
+                submitBtn.textContent = '⏳ Creating Account...';
+                submitBtn.disabled = true;
+
+                console.log('📡 Calling signup API...');
+
+                // Call signup API
+                const response = await signup({
+                    name: name,
+                    address: address,
+                    city: city,
+                    contact: contact,
+                    email: email,
+                    password: password,
+                    confirmPassword: confirmPassword
+                });
+
+                console.log('✅ Signup response:', response);
+
+                // Show success message
+                statusDiv.style.backgroundColor = '#d4edda';
+                statusDiv.style.color = '#155724';
+                statusDiv.textContent = '✅ ' + response.message + '\n\nYour account has been created successfully!\nRedirecting to login page...';
+                showMessage('✅ ' + response.message, 'success');
+
+                // Show alert
+                alert('✅ Account created successfully!\n\nEmail: ' + email + '\nPassword: (as entered)\n\nYou can now login with these credentials.');
+
+                // Clear form
+                document.getElementById('signupForm').reset();
+                statusDiv.style.display = 'none';
+
+                // Redirect to login page after 3 seconds
+                setTimeout(() => {
+                    console.log('🔄 Redirecting to login page...');
+                    window.location.href = 'login.html';
+                }, 3000);
+
+            } catch (error) {
+                console.error('❌ Signup error:', error);
+                
+                statusDiv.style.display = 'block';
+                statusDiv.style.backgroundColor = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.textContent = '❌ Error: ' + error.message + '\n\nPlease check:\n1. Backend is running (npm start)\n2. MongoDB is running (mongod)\n3. All fields are filled correctly';
+                
+                showMessage('❌ ' + error.message, 'error');
+                
+                // Reset button
+                submitBtn.textContent = 'Create Account';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Check if user is already logged in
+        if (isLoggedIn()) {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <script src="google-translate-init.js"></script>
+
